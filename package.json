@@ -4,19 +4,32 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build"
+    "build": "vue-cli-service build --modern",
+    "zip": "powershell Remove-Item stfile_bundle.zip -Recurse -Force && powershell Compress-Archive -Path dist/* -DestinationPath stfile_bundle.zip",
+    "copy": "powershell Copy-Item –Path stfile_bundle.zip –Destination //gispolarisdev1v/c$/temp",
+    "publish": "npm run zip && npm run copy",
+    "prod":  "powershell Copy-Item –Path dist/* –Destination //gisags2v/c$/inetpub/wwwroot/stfile -Recurse -Force"
   },
   "dependencies": {
-    "core-js": "^3.6.5",
-    "register-service-worker": "^1.7.1",
+    "assert": "^2.0.0",
+    "axios": "^0.21.1",
+    "core-js": "^3.9.1",
+    "mapbox-gl": "^1.13.1",
+    "register-service-worker": "^1.7.2",
     "vue": "^2.6.11",
-    "vuex": "^3.4.0"
+    "vuelidate": "^0.7.6",
+    "vuetify": "^2.4.8",
+    "vuex": "^3.6.2"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "~4.5.0",
-    "@vue/cli-plugin-pwa": "~4.5.0",
-    "@vue/cli-plugin-vuex": "~4.5.0",
-    "@vue/cli-service": "~4.5.0",
-    "vue-template-compiler": "^2.6.11"
+    "@vue/cli-plugin-babel": "^4.5.12",
+    "@vue/cli-plugin-pwa": "^4.5.12",
+    "@vue/cli-plugin-vuex": "^4.5.12",
+    "@vue/cli-service": "^4.5.12",
+    "sass": "^1.32.8",
+    "sass-loader": "^8.0.0",
+    "vue-cli-plugin-vuetify": "^2.3.1",
+    "vue-template-compiler": "^2.6.11",
+    "vuetify-loader": "^1.7.2"
   }
 }
