@@ -21,5 +21,6 @@ pnpm-debug.log*
 *.njsproj
 *.sln
 *.sw?
+*.code-workspace
 node_modules
 package-lock.json

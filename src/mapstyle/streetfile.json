@@ -1,0 +1,1075 @@
+{
+  "version": 8,
+  "id": "Street-File",
+  "name": "Street File Style",
+  "metadata": {
+    "maputnik:license": "https://github.com/maputnik/osm-liberty/blob/gh-pages/LICENSE.md",
+    "maputnik:renderer": "mbgljs",
+    "streettiles:version": "3.x"
+  },
+  "sources": {
+    "streettiles": {
+      "type": "vector",
+      "tiles": [ "https://maps.mecklenburgcountync.gov/tiles/sfd/{z}/{x}/{y}.pbf" ],
+      "maxzoom": 14,
+      "minzoom": 9
+    }
+  },
+  "sprite": "https://maps.mecklenburgcountync.gov/gl-styles/sprites/meckstreets",
+  "glyphs": "https://maps.mecklenburgcountync.gov/gl-styles/fonts/{fontstack}/{range}.pbf",
+  "layers": [
+    {
+      "id": "background",
+      "type": "background",
+      "paint": {"background-color": "rgb(239,239,239)"}
+    },
+    {
+      "id": "juris_charlotte",
+      "type": "fill",
+      "source": "streettiles",
+      "source-layer": "jurisdictions",
+      "minzoom": 9,
+      "filter": ["==", "name", "Charlotte"],
+      "layout": {"visibility": "visible"},
+      "paint": {"fill-color": "#fff"},
+      "interactive": true
+    },
+    {
+        "id": "juris_cornelius",
+        "type": "fill",
+        "source": "streettiles",
+        "source-layer": "jurisdictions",
+        "minzoom": 9,
+        "filter": ["==", "name", "Cornelius"],
+        "layout": {"visibility": "visible"},
+        "paint": {"fill-color": "#ffff94"},
+        "interactive": true
+    },
+    {
+        "id": "juris_davidson",
+        "type": "fill",
+        "source": "streettiles",
+        "source-layer": "jurisdictions",
+        "minzoom": 9,
+        "filter": ["==", "name", "Davidson"],
+        "layout": {"visibility": "visible"},
+        "paint": {"fill-color": "#ffd37f"},
+        "interactive": true
+    },
+    {
+        "id": "juris_huntersville",
+        "type": "fill",
+        "source": "streettiles",
+        "source-layer": "jurisdictions",
+        "minzoom": 9,
+        "filter": ["==", "name", "Huntersville"],
+        "layout": {"visibility": "visible"},
+        "paint": {"fill-color": "hsl(20, 91%, 78%)"},
+        "interactive": true
+    },
+    {
+        "id": "juris_matthews",
+        "type": "fill",
+        "source": "streettiles",
+        "source-layer": "jurisdictions",
+        "minzoom": 9,
+        "filter": ["==", "name", "Matthews"],
+        "layout": {"visibility": "visible"},
+        "paint": {"fill-color": "#e8d9ff"},
+        "interactive": true
+    },
+    {
+        "id": "juris_mecklenburg",
+        "type": "fill",
+        "source": "streettiles",
+        "source-layer": "jurisdictions",
+        "minzoom": 9,
+        "filter": ["==", "name", "Mecklenburg"],
+        "layout": {"visibility": "visible"},
+        "paint": {"fill-color": "rgba(239,233,225,1.00)"},
+        "interactive": true
+    },
+    {
+        "id": "juris_minthill",
+        "type": "fill",
+        "source": "streettiles",
+        "source-layer": "jurisdictions",
+        "minzoom": 9,
+        "filter": ["==", "name", "Mint Hill"],
+        "layout": {"visibility": "visible"},
+        "paint": {"fill-color": "#ffc9d1"},
+        "interactive": true
+    },
+    {
+        "id": "juris_pineville",
+        "type": "fill",
+        "source": "streettiles",
+        "source-layer": "jurisdictions",
+        "minzoom": 9,
+        "filter": ["==", "name", "Pineville"],
+        "layout": {"visibility": "visible"},
+        "paint": {
+            "fill-color": {
+                "base": 1,
+                "stops": [[0, "#d6b3cc"], [22, "#d6b3cc"]]
+            },
+            "fill-translate": [0, 0],
+            "fill-translate-anchor": "map"
+        },
+        "interactive": true
+    },
+    {
+        "id": "juris_stallings",
+        "type": "fill",
+        "source": "streettiles",
+        "source-layer": "jurisdictions",
+        "minzoom": 9,
+        "filter": ["==", "name", "Stallings"],
+        "layout": {"visibility": "visible"},
+        "paint": {"fill-color": "#d6b3cc"},
+        "interactive": true
+    },
+    {
+        "id": "streams",
+        "type": "line",
+        "source": "streettiles",
+        "source-layer": "streams",
+        "minzoom": 12,
+        "layout": {"visibility": "visible"},
+        "paint": {"line-color": "hsl(196, 80%, 70%)", "line-width": 2},
+        "interactive": true
+    },
+    {
+        "id": "ponds",
+        "type": "fill",
+        "source": "streettiles",
+        "source-layer": "water_bodies",
+        "minzoom": 12,
+        "filter": ["==", "type", "Ponds"],
+        "layout": {"visibility": "visible"},
+        "paint": {"fill-color": "hsl(196, 80%, 70%)"},
+        "interactive": true
+    },
+    {
+        "id": "lakes",
+        "type": "fill",
+        "source": "streettiles",
+        "source-layer": "water_bodies",
+        "minzoom": 9,
+        "filter": [
+            "!in",
+            "type",
+            "Creek / Wetland",
+            "Ponds",
+            "Quarry",
+            "Wastewater Treatment",
+            "Water Treatment"
+        ],
+        "layout": {"visibility": "visible"},
+        "paint": {"fill-color": "hsl(196, 80%, 70%)"},
+        "interactive": true
+    },
+    {
+        "id": "golf_courses",
+        "type": "fill",
+        "source": "streettiles",
+        "source-layer": "golf_courses",
+        "minzoom": 12,
+        "layout": {"visibility": "visible"},
+        "paint": {"fill-color": "#e2f9de"},
+        "interactive": true
+    },
+    {
+        "id": "parks_developed",
+        "type": "fill",
+        "source": "streettiles",
+        "source-layer": "parks",
+        "minzoom": 12,
+        "filter": ["==", "type", "DEVELOPED"],
+        "layout": {"visibility": "visible"},
+        "paint": {"fill-color": "#c7d79e"},
+        "interactive": true
+    },
+    {
+        "id": "parks_greenway",
+        "type": "fill",
+        "source": "streettiles",
+        "source-layer": "parks",
+        "minzoom": 12,
+        "filter": ["==", "type", "GREENWAY"],
+        "layout": {"visibility": "visible"},
+        "paint": {"fill-color": "#ccff99"},
+        "interactive": true
+    },
+    {
+        "id": "parks_undeveloped",
+        "type": "fill",
+        "source": "streettiles",
+        "source-layer": "parks",
+        "minzoom": 12,
+        "filter": ["==", "type", "UNDEVELOPED"],
+        "layout": {"visibility": "visible"},
+        "paint": {"fill-color": "#b2ccad"},
+        "interactive": true
+    },
+    {
+        "id": "hospitals",
+        "type": "fill",
+        "source": "streettiles",
+        "source-layer": "hospitals",
+        "minzoom": 12,
+        "layout": {"visibility": "visible"},
+        "paint": {"fill-color": "#f5dff4"},
+        "interactive": true
+    },
+    {
+        "id": "buildings",
+        "type": "fill",
+        "source": "streettiles",
+        "source-layer": "buildings",
+        "minzoom": 14,
+        "layout": {"visibility": "visible"},
+        "paint": {"fill-color": "hsl(0, 8%, 80%)"},
+        "interactive": true
+    },
+    {
+        "id": "parcels",
+        "type": "line",
+        "source": "streettiles",
+        "source-layer": "parcels",
+        "minzoom": 14,
+        "layout": {
+            "visibility": "visible",
+            "line-cap": "round",
+            "line-join": "round",
+            "line-round-limit": {
+                "base": 1,
+                "stops": [[0, 1.05], [22, 1.05]]
+            }
+        },
+        "paint": {"line-color": "#9c9c9c", "line-width": 1},
+        "interactive": true
+    },
+   
+    
+    {
+        "id": "county-boundary-ncsc",
+        "type": "line",
+        "source": "streettiles",
+        "source-layer": "county_boundary_ncsc",
+        "minzoom": 9,
+        "maxzoom": 14,
+        "layout": {"visibility": "visible"},
+        "paint": {"line-dasharray": [5, 2], "line-width": 2},
+        "interactive": true
+    },
+    {
+        "id": "county_boundary_line",
+        "type": "line",
+        "source": "streettiles",
+        "source-layer": "county_boundary",
+        "minzoom": 9,
+        "layout": {},
+        "paint": {
+            "line-color": "#000000",
+            "line-dasharray": [3, 3],
+            "line-gap-width": {"stops": [[12, 0], [20, 6]]},
+            "line-opacity": 1,
+            "line-width": {"base": 1.4, "stops": [[8, 1], [20, 2]]}
+        },
+        "interactive": true
+    },
+    {
+        "id": "greenways",
+        "type": "line",
+        "source": "streettiles",
+        "source-layer": "greenways",
+        "minzoom": 12,
+        "layout": {"visibility": "visible"},
+        "paint": {"line-color": "#4c7300", "line-width": 2},
+        "interactive": true
+    },
+    {
+        "id": "greenway_labels",
+        "type": "symbol",
+        "source": "streettiles",
+        "source-layer": "greenways",
+        "layout": {
+            "visibility": "visible",
+            "text-field": "{trail_name}",
+            "text-size": {"base": 1, "stops": [[14, 9], [22, 14]]},
+            "symbol-placement": "line",
+            "text-font": ["Open Sans Bold"]
+        },
+        "paint": {
+            "text-color": "#fff",
+            "text-halo-color": "#4c7300",
+            "text-halo-width": 1.5,
+            "text-halo-blur": 0.5
+        },
+        "interactive": true
+    },
+    {
+        "id": "lightrail",
+        "type": "line",
+        "source": "streettiles",
+        "source-layer": "lightrail",
+        "layout": {"visibility": "visible"},
+        "paint": {"line-color": "#475dcc"},
+        "interactive": true
+    },
+    {
+        "id": "lightrail_tracks",
+        "metadata": {"mapbox:group": "a502734074255c5c403d4955c499622a"},
+        "paint": {
+            "line-color": "#475dcc",
+            "line-dasharray": [3, 4],
+            "line-width": {
+                "base": 1.4,
+                "stops": [[14.5, 0], [15, 3], [20, 8]]
+            }
+        },
+        "interactive": true,
+        "ref": "lightrail"
+    },
+    {
+        "id": "road_rail",
+        "type": "line",
+        "source": "streettiles",
+        "source-layer": "railroads",
+        "minzoom": 13,
+        "layout": {"line-join": "round", "visibility": "visible"},
+        "paint": {
+            "line-color": {
+                "stops": [
+                    [13, "hsl(50, 17%, 82%)"],
+                    [16, "hsl(230, 3%, 50%)"]
+                ]
+            },
+            "line-width": {"base": 1.5, "stops": [[14, 1], [20, 1.5]]}
+        },
+        "interactive": true
+    },
+    {
+        "id": "road_rail_tracks",
+        "paint": {
+            "line-color": {
+                "stops": [
+                    [13, "hsl(50, 17%, 82%)"],
+                    [16, "hsl(230, 3%, 50%)"]
+                ]
+            },
+            "line-width": {"base": 1.5, "stops": [[14, 6], [20, 12]]},
+            "line-dasharray": [0.1, 15],
+            "line-opacity": {"base": 1, "stops": [[13.75, 0], [14, 1]]}
+        },
+        "interactive": true,
+        "ref": "road_rail"
+    },
+    {
+        "id": "roads_casing",
+        "type": "line",
+        "source": "streettiles",
+        "source-layer": "roads",
+        "minzoom": 14,
+        "filter": ["in", "cfcc", "A21", "A31", "A41", "A63"],
+        "layout": {
+            "visibility": "visible",
+            "line-join": "round",
+            "line-cap": "round"
+        },
+        "paint": {
+            "line-color": "#828282",
+            "line-width": {
+                "base": 1.2,
+                "stops": [[5, 0.2], [6, 0.4], [7, 1.2], [20, 18]]
+            }
+        },
+        "interactive": true
+    },
+    {
+        "id": "roads_inside",
+        "paint": {
+            "line-color": "#f5f0f0",
+            "line-width": {
+                "base": 1.2,
+                "stops": [[6.5, 0], [7, 0.3], [20, 14]]
+            }
+        },
+        "interactive": true,
+        "ref": "roads_casing"
+    },
+    {
+        "id": "throughfares",
+        "type": "line",
+        "source": "streettiles",
+        "source-layer": "throughfare",
+        "minzoom": 9,
+        "maxzoom": 14,
+        "layout": {"visibility": "visible"},
+        "paint": {
+            "line-color": "#828282",
+            "line-width": {
+                "base": 1,
+                "stops": [[9, 1], [10, 1], [11, 1], [12, 2]]
+            }
+        },
+        "interactive": true
+    },
+    {
+        "id": "us_highways_outside_casing",
+        "type": "line",
+        "source": "streettiles",
+        "source-layer": "us_highways_outside",
+        "minzoom": 9,
+        "layout": {
+            "visibility": "visible",
+            "line-join": "round",
+            "line-cap": "round"
+        },
+        "paint": {
+            "line-color": "#d9b314",
+            "line-width": {
+                "base": 1.2,
+                "stops": [[5, 0.4], [6, 0.6], [7, 1.5], [20, 22]]
+            },
+            "line-translate": [0, 0]
+        },
+        "interactive": true
+    },
+    {
+        "id": "us_highways_outside",
+        "paint": {
+            "line-color": "#f7df77",
+            "line-width": {
+                "base": 1.2,
+                "stops": [[6.5, 0], [7, 0.5], [20, 18]]
+            },
+            "line-translate": [0, 0]
+        },
+        "interactive": true,
+        "ref": "us_highways_outside_casing"
+    },
+    {
+        "id": "us_highways_casing",
+        "type": "line",
+        "source": "streettiles",
+        "source-layer": "us_highways",
+        "minzoom": 9,
+        "layout": {
+            "visibility": "visible",
+            "line-join": "round",
+            "line-cap": "round"
+        },
+        "paint": {
+            "line-color": "#d9b314",
+            "line-width": {
+                "base": 1.2,
+                "stops": [[5, 0.4], [6, 0.6], [7, 1.5], [20, 22]]
+            },
+            "line-translate": [0, 0]
+        },
+        "interactive": true
+    },
+    {
+        "id": "us_highways",
+        "paint": {
+            "line-color": "#f7df77",
+            "line-width": {
+                "base": 1.2,
+                "stops": [[6.5, 0], [7, 0.5], [20, 18]]
+            },
+            "line-translate": [0, 0]
+        },
+        "interactive": true,
+        "ref": "us_highways_casing"
+    },
+    {
+        "id": "interstates_outside_casing",
+        "type": "line",
+        "source": "streettiles",
+        "source-layer": "interstates_outside",
+        "minzoom": 9,
+        "layout": {
+            "visibility": "visible",
+            "line-join": "round",
+            "line-cap": "round"
+        },
+        "paint": {
+            "line-color": "#a34a05",
+            "line-width": {
+                "base": 1.2,
+                "stops": [[5, 0.4], [6, 0.6], [7, 1.5], [20, 22]]
+            },
+            "line-translate": [0, 0]
+        },
+        "interactive": true
+    },
+    {
+        "id": "interstates_outside",
+        "paint": {
+            "line-color": "#ffa159",
+            "line-width": {
+                "base": 1.2,
+                "stops": [[6.5, 0], [7, 0.5], [20, 18]]
+            },
+            "line-translate": [0, 0]
+        },
+        "interactive": true,
+        "ref": "interstates_outside_casing"
+    },
+    {
+        "id": "interstates_casing",
+        "type": "line",
+        "source": "streettiles",
+        "source-layer": "interstates",
+        "minzoom": 9,
+        "layout": {
+            "visibility": "visible",
+            "line-join": "round",
+            "line-cap": "round"
+        },
+        "paint": {
+            "line-color": "#a34a05",
+            "line-width": {
+                "base": 1.2,
+                "stops": [[5, 0.4], [6, 0.6], [7, 1.5], [20, 22]]
+            },
+            "line-translate": [0, 0]
+        },
+        "interactive": true
+    },
+    {
+        "id": "interstates",
+        "paint": {
+            "line-color": "#ffa159",
+            "line-width": {
+                "base": 1.2,
+                "stops": [[6.5, 0], [7, 0.5], [20, 18]]
+            },
+            "line-translate": [0, 0]
+        },
+        "interactive": true,
+        "ref": "interstates_casing"
+    },
+    {
+        "id": "row_utility",
+        "type": "line",
+        "source": "streettiles",
+        "source-layer": "row_utility",
+        "minzoom": 14,
+        "layout": {"visibility": "visible"},
+        "paint": {
+            "line-color": "#734c00",
+            "line-dasharray": [3, 5],
+            "line-width": 2
+        },
+        "interactive": true
+    },
+    {
+        "id": "row_railroad",
+        "type": "line",
+        "source": "streettiles",
+        "source-layer": "row_railroad",
+        "minzoom": 14,
+        "layout": {"visibility": "visible"},
+        "paint": {
+            "line-color": "#ffaa00",
+            "line-dasharray": [0, 0],
+            "line-width": 2
+        },
+        "interactive": true
+    },
+    {
+        "id": "schools_private",
+        "type": "symbol",
+        "source": "streettiles",
+        "source-layer": "schools_private",
+        "minzoom": 14,
+        "layout": {
+            "visibility": "visible",
+            "text-field": "{name}",
+            "text-size": {"base": 1, "stops": [[12, 10], [22, 12]]},
+            "text-font": ["Open Sans Bold"],
+            "text-offset": [0, 0.51],
+            "text-anchor": "top",
+            "icon-image": "school-15",
+            "text-transform": "none"
+        },
+        "paint": {
+            "text-color": "#8c7700",
+            "text-halo-color": "#fff",
+            "text-halo-width": 1,
+            "text-halo-blur": 0.5
+        },
+        "interactive": true
+    },
+    {
+        "id": "schools_charter",
+        "type": "symbol",
+        "source": "streettiles",
+        "source-layer": "schools_charter",
+        "minzoom": 14,
+        "layout": {
+            "visibility": "visible",
+            "text-field": "{name}",
+            "text-size": {"base": 1, "stops": [[12, 10], [22, 12]]},
+            "text-font": ["Open Sans Bold"],
+            "text-offset": [0, 1],
+            "text-anchor": "top",
+            "icon-image": "school-15",
+            "text-transform": "none"
+        },
+        "paint": {
+            "text-color": "#8c7700",
+            "text-halo-color": "#fff",
+            "text-halo-width": 1,
+            "text-halo-blur": 0.5
+        },
+        "interactive": true
+    },
+    {
+        "id": "schools_cms",
+        "type": "symbol",
+        "source": "streettiles",
+        "source-layer": "schools_cms",
+        "minzoom": 14,
+        "layout": {
+            "visibility": "visible",
+            "text-field": "{name}",
+            "text-size": {"base": 1, "stops": [[12, 10], [22, 12]]},
+            "text-font": ["Open Sans Bold"],
+            "text-offset": [0, 1],
+            "text-anchor": "top",
+            "icon-image": "school-15",
+            "text-transform": "none"
+        },
+        "paint": {
+            "text-color": "#8c7700",
+            "text-halo-color": "#fff",
+            "text-halo-width": 1,
+            "text-halo-blur": 0.5
+        },
+        "interactive": true
+    },
+    {
+        "id": "road_labels ",
+        "type": "symbol",
+        "source": "streettiles",
+        "source-layer": "roads",
+        "minzoom": 14,
+        "filter": ["in", "cfcc", "A21", "A31", "A41"],
+        "layout": {
+            "text-size": {"base": 1, "stops": [[14, 9], [20, 16]]},
+            "text-max-angle": 30,
+            "symbol-spacing": 250,
+            "text-font": ["Open Sans Semibold"],
+            "symbol-placement": "line",
+            "text-padding": 1,
+            "visibility": "visible",
+            "text-rotation-alignment": "map",
+            "text-field": {
+                "base": 1,
+                "stops": [
+                    [14, "{wholestnam}"],
+                    [18, "{lr_add} - {ul_add} {wholestname}"]
+                ]
+            },
+            "text-letter-spacing": 0.01
+        },
+        "paint": {
+            "text-color": "hsl(0, 0%, 0%)",
+            "text-halo-color": "#fff",
+            "text-halo-width": 1,
+            "text-halo-blur": 1
+        },
+        "interactive": true
+    },
+    {
+        "id": "state_highway_outside_sc_labels",
+        "type": "symbol",
+        "source": "streettiles",
+        "source-layer": "us_highways_outside",
+        "minzoom": 9,
+        "filter": ["==", "class", "SC"],
+        "layout": {
+            "text-size": 9,
+            "icon-image": "state-highway-sc",
+            "icon-rotation-alignment": "viewport",
+            "text-max-angle": 38,
+            "symbol-spacing": {"base": 1, "stops": [[11, 150], [14, 400]]},
+            "text-font": ["Open Sans Bold"],
+            "symbol-placement": {
+                "base": 1,
+                "stops": [[10, "line"], [11, "line"]]
+            },
+            "text-padding": 2,
+            "visibility": "visible",
+            "text-offset": [0, 0.2],
+            "text-rotation-alignment": "viewport",
+            "text-anchor": "center",
+            "text-field": "{nbr}",
+            "text-letter-spacing": 0.05,
+            "icon-padding": 2
+        },
+        "paint": {
+            "text-color": "#15498C",
+            "icon-halo-color": "rgba(0, 0, 0, 1)",
+            "icon-halo-width": 1,
+            "text-opacity": 1,
+            "icon-color": "white",
+            "text-halo-color": "hsl(0, 0%, 100%)",
+            "text-halo-width": 0
+        },
+        "interactive": true
+    },
+    {
+        "id": "state_highway_outside_nc_labels",
+        "type": "symbol",
+        "source": "streettiles",
+        "source-layer": "us_highways_outside",
+        "minzoom": 9,
+        "filter": ["==", "class", "NC"],
+        "layout": {
+            "text-size": 9,
+            "icon-image": "state-highway-nc",
+            "icon-rotation-alignment": "viewport",
+            "text-max-angle": 38,
+            "symbol-spacing": {"base": 1, "stops": [[11, 150], [14, 400]]},
+            "text-font": ["Open Sans Bold"],
+            "symbol-placement": {
+                "base": 1,
+                "stops": [[10, "line"], [11, "line"]]
+            },
+            "text-padding": 2,
+            "visibility": "visible",
+            "text-rotation-alignment": "viewport",
+            "text-field": "{nbr}",
+            "text-letter-spacing": 0.05,
+            "icon-padding": 2
+        },
+        "paint": {
+            "text-color": "hsl(0, 0%, 0%)",
+            "icon-halo-color": "rgba(0, 0, 0, 1)",
+            "icon-halo-width": 1,
+            "text-opacity": 1,
+            "icon-color": "white",
+            "text-halo-color": "hsl(0, 0%, 100%)",
+            "text-halo-width": 0
+        },
+        "interactive": true
+    },
+    {
+        "id": "state_highway_labels",
+        "type": "symbol",
+        "source": "streettiles",
+        "source-layer": "us_highways",
+        "minzoom": 9,
+        "filter": ["==", "class", "NC"],
+        "layout": {
+            "text-size": 9,
+            "icon-image": "state-highway-nc",
+            "icon-rotation-alignment": "viewport",
+            "text-max-angle": 38,
+            "symbol-spacing": {"base": 1, "stops": [[11, 150], [14, 400]]},
+            "text-font": ["Open Sans Bold"],
+            "symbol-placement": {
+                "base": 1,
+                "stops": [[10, "line"], [11, "line"]]
+            },
+            "text-padding": 2,
+            "visibility": "visible",
+            "text-rotation-alignment": "viewport",
+            "text-field": "{nbr}",
+            "text-letter-spacing": 0.05,
+            "icon-padding": 2
+        },
+        "paint": {
+            "text-color": "hsl(0, 0%, 0%)",
+            "icon-halo-color": "rgba(0, 0, 0, 1)",
+            "icon-halo-width": 1,
+            "text-opacity": 1,
+            "icon-color": "white",
+            "text-halo-color": "hsl(0, 0%, 100%)",
+            "text-halo-width": 0
+        },
+        "interactive": true
+    },
+    {
+        "id": "us_highway_outside_labels",
+        "type": "symbol",
+        "source": "streettiles",
+        "source-layer": "us_highways_outside",
+        "minzoom": 9,
+        "filter": ["==", "class", "US"],
+        "layout": {
+            "text-size": 9,
+            "icon-image": "us-highway",
+            "icon-rotation-alignment": "viewport",
+            "text-max-angle": 38,
+            "symbol-spacing": {"base": 1, "stops": [[11, 150], [14, 400]]},
+            "text-font": ["Open Sans Bold"],
+            "symbol-placement": {
+                "base": 1,
+                "stops": [[10, "line"], [11, "line"]]
+            },
+            "text-padding": 2,
+            "visibility": "visible",
+            "text-rotation-alignment": "viewport",
+            "text-field": "{nbr}",
+            "text-letter-spacing": 0.05,
+            "icon-padding": 2
+        },
+        "paint": {
+            "text-color": "hsl(0, 0%, 0%)",
+            "icon-halo-color": "rgba(0, 0, 0, 1)",
+            "icon-halo-width": 1,
+            "text-opacity": 1,
+            "icon-color": "white",
+            "text-halo-color": "hsl(0, 0%, 100%)",
+            "text-halo-width": 0
+        },
+        "interactive": true
+    },
+    {
+        "id": "us_highway_labels",
+        "type": "symbol",
+        "source": "streettiles",
+        "source-layer": "us_highways",
+        "minzoom": 9,
+        "filter": ["==", "class", "US"],
+        "layout": {
+            "text-size": 9,
+            "icon-image": "us-highway",
+            "icon-rotation-alignment": "viewport",
+            "text-max-angle": 38,
+            "symbol-spacing": {"base": 1, "stops": [[11, 150], [14, 400]]},
+            "text-font": ["Open Sans Bold"],
+            "symbol-placement": {
+                "base": 1,
+                "stops": [[10, "line"], [11, "line"]]
+            },
+            "text-padding": 2,
+            "visibility": "visible",
+            "text-rotation-alignment": "viewport",
+            "text-field": "{nbr}",
+            "text-letter-spacing": 0.05,
+            "icon-padding": 2
+        },
+        "paint": {
+            "text-color": "hsl(0, 0%, 0%)",
+            "icon-halo-color": "rgba(0, 0, 0, 1)",
+            "icon-halo-width": 1,
+            "text-opacity": 1,
+            "icon-color": "white",
+            "text-halo-color": "hsl(0, 0%, 100%)",
+            "text-halo-width": 0
+        },
+        "interactive": true
+    },
+    {
+        "id": "interstates_outside_labels",
+        "type": "symbol",
+        "source": "streettiles",
+        "source-layer": "interstates_outside",
+        "minzoom": 9,
+        "layout": {
+            "text-size": 9,
+            "icon-image": "us-interstate",
+            "icon-rotation-alignment": "viewport",
+            "text-max-angle": 38,
+            "symbol-spacing": {"base": 1, "stops": [[11, 150], [14, 400]]},
+            "text-font": ["Open Sans Bold"],
+            "symbol-placement": {
+                "base": 1,
+                "stops": [[10, "line"], [11, "line"]]
+            },
+            "text-padding": 2,
+            "visibility": "visible",
+            "text-rotation-alignment": "viewport",
+            "text-field": "{nbr}",
+            "text-letter-spacing": 0.05,
+            "icon-padding": 2
+        },
+        "paint": {
+            "text-color": "hsl(0, 0%, 100%)",
+            "icon-halo-color": "rgba(0, 0, 0, 1)",
+            "icon-halo-width": 1,
+            "text-opacity": 1,
+            "icon-color": "white",
+            "text-halo-color": "hsl(0, 0%, 100%)",
+            "text-halo-width": 0
+        },
+        "interactive": true
+    },
+    {
+        "id": "interstates_labels",
+        "type": "symbol",
+        "source": "streettiles",
+        "source-layer": "interstates",
+        "minzoom": 9,
+        "filter": ["in", "nbr", "277", "485", "77", "85"],
+        "layout": {
+            "text-size": 9,
+            "icon-image": "us-interstate",
+            "icon-rotation-alignment": "viewport",
+            "text-max-angle": 38,
+            "symbol-spacing": {"base": 1, "stops": [[11, 150], [14, 400]]},
+            "text-font": ["Open Sans Bold"],
+            "symbol-placement": {
+                "base": 1,
+                "stops": [[10, "line"], [11, "line"]]
+            },
+            "text-padding": 2,
+            "visibility": "visible",
+            "text-rotation-alignment": "viewport",
+            "text-field": "{nbr}",
+            "text-letter-spacing": 0.05,
+            "icon-padding": 2
+        },
+        "paint": {
+            "text-color": "hsl(0, 0%, 100%)",
+            "icon-halo-color": "rgba(0, 0, 0, 1)",
+            "icon-halo-width": 1,
+            "text-opacity": 1,
+            "icon-color": "white",
+            "text-halo-color": "hsl(0, 0%, 100%)",
+            "text-halo-width": 0
+        },
+        "interactive": true
+    },
+    {
+        "id": "lightrail_stations",
+        "type": "symbol",
+        "source": "streettiles",
+        "source-layer": "lightrail_stations",
+        "layout": {
+            "text-size": {"base": 1, "stops": [[12, 10], [22, 12]]},
+            "icon-image": "rail-light-15",
+            "text-transform": "none",
+            "text-font": ["Open Sans Bold"],
+            "visibility": "visible",
+            "text-offset": [0, 1],
+            "icon-size": 1.4,
+            "text-anchor": "top",
+            "text-field": "{name}"
+        },
+        "paint": {
+            "text-color": "#475BCC",
+            "text-halo-color": "#fff",
+            "text-halo-width": 1,
+            "text-halo-blur": 0.5
+        },
+        "interactive": true
+    },
+    {
+        "id": "address_labels",
+        "type": "symbol",
+        "source": "streettiles",
+        "source-layer": "mat",
+        "minzoom": 18,
+        "layout": {
+            "text-size": {"base": 1, "stops": [[18, 10], [22, 16]]},
+            "text-allow-overlap": false,
+            "icon-image": "circle-11",
+            "text-font": ["Open Sans Semibold"],
+            "icon-allow-overlap": {
+                "base": 1,
+                "stops": [[18, true], [20, false]]
+            },
+            "text-justify": "center",
+            "visibility": "visible",
+            "text-offset": [0, -0.5],
+            "icon-size": 0.8,
+            "text-anchor": "bottom",
+            "text-field": "{house_no}"
+        },
+        "paint": {
+            "text-color": "#735139",
+            "text-halo-width": 1,
+            "text-halo-blur": 0.5,
+            "text-halo-color": "#fff"
+        },
+        "interactive": true
+    },
+    {
+        "id": "parcel_labels",
+        "type": "symbol",
+        "source": "streettiles",
+        "source-layer": "parcel_labels",
+        "minzoom": 18,
+        "layout": {
+            "visibility": "visible",
+            "text-field": "{pid}",
+            "text-size": {"base": 1, "stops": [[18, 10], [22, 16]]},
+            "text-max-width": 9,
+            "text-font": ["Open Sans Semibold"],
+            "text-anchor": "top",
+            "text-offset": [0, 1],
+            "text-allow-overlap": false
+        },
+        "paint": {
+            "text-color": "#334",
+            "text-halo-color": "#fff",
+            "text-halo-width": 1,
+            "text-halo-blur": 0.5
+        },
+        "interactive": true
+    },
+    {
+        "id": "hospital_labels",
+        "type": "symbol",
+        "source": "streettiles",
+        "source-layer": "hospital_labels",
+        "minzoom": 14,
+        "layout": {
+            "visibility": "visible",
+            "text-field": "{name}",
+            "text-size": {"base": 1, "stops": [[12, 10], [22, 12]]},
+            "text-font": ["Open Sans Bold"],
+            "text-offset": [0, 1],
+            "text-anchor": "top",
+            "icon-image": "hospital-15",
+            "text-transform": "none"
+        },
+        "paint": {
+            "text-color": "#b35071",
+            "text-halo-color": "#fff",
+            "text-halo-width": 1,
+            "text-halo-blur": 0.5
+        },
+        "interactive": true
+    },
+    {
+        "id": "jurisdiction_labels",
+        "type": "symbol",
+        "source": "streettiles",
+        "source-layer": "jurisdictions_labels",
+        "minzoom": 9,
+        "maxzoom": 16,
+        "layout": {
+            "text-size": {"base": 1, "stops": [[9, 12], [22, 16]]},
+            "text-allow-overlap": false,
+            "text-ignore-placement": false,
+            "text-transform": "none",
+            "text-font": ["Open Sans Bold"],
+            "symbol-placement": "point",
+            "text-justify": "center",
+            "visibility": "visible",
+            "text-offset": {
+                "base": 1,
+                "stops": [[7.99, [0, 0.15]], [8, [0, 0]]]
+            },
+            "text-rotation-alignment": "viewport",
+            "text-anchor": "top-right",
+            "text-field": "{name}",
+            "text-max-width": 7
+        },
+        "paint": {
+            "text-halo-color": "hsl(0, 0%, 100%)",
+            "text-halo-width": 1
+        },
+        "interactive": true
+    }
+  ]
+}
