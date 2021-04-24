@@ -57,7 +57,7 @@ export default new Vuex.Store( {
       let token = ( await axios.post( "https://maps.mecklenburgcountync.gov/auth/v1/login", loginData ) ).data;
       
       if( typeof token === 'object' && token !== null ){
-        commit( "auth", "" );
+        commit( "auth", "error_" + Math.floor( Math.random( ) * 1000 ) + 1 );
 
       }else{
         const now = new Date( ),

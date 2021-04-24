@@ -25,7 +25,7 @@
 							<v-row class="mt-4">
 								<v-btn @click="login" outlined color="primary"  class="ml-4">Login</v-btn>
 								<v-btn @click="back" outlined color="primary" class="ml-4">Back</v-btn>
-								<p color="red" v-if="auth === 'error'" class="ml-4">The entered login or password is wrong.</p>
+								<p v-if="auth.indexOf( 'error' ) > -1" class="ml-4 red--text">The entered login or password is wrong.</p>
 							</v-row>
             			</v-container>
             			<v-fade-transition>
@@ -119,9 +119,9 @@
       		
 			},
 		    authenticate( ){
-				if( this.auth === 'error' ){
+				if( this.auth === '' || this.auth.indexOf( "error" ) > -1 ){
 					this.$store.commit( "mode", "login" );
-				}else if( this.auth != '' ){
+				}else{
 					this.$store.commit( "mode", "info" );
 				}
 

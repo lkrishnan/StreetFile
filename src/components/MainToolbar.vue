@@ -1,7 +1,7 @@
 <template>
     <div>
       	<v-app-bar app color="primary" dark>
-        	<v-toolbar-title class="headline">Street File Dictionary v1.3.4</v-toolbar-title>
+        	<v-toolbar-title class="headline">Street File Dictionary v1.5.3</v-toolbar-title>
         	<v-spacer></v-spacer>
         	<v-btn class="ma-2" outlined color="white" v-if="( auth !== '' ) && mode === 'info'" @click="toggle( 'add_legal' )" ><v-icon left>mdi-plus-circle</v-icon>Add New Legal</v-btn>
         	<v-btn class="ma-2" outlined color="white" v-if="( auth === '' )" @click="toggle( 'login' )"><v-icon left>mdi-login-variant</v-icon>Login</v-btn>
