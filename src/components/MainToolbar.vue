@@ -1,13 +1,28 @@
 <template>
-    <div>
-      	<v-app-bar app color="primary" dark>
-        	<v-toolbar-title class="headline">Street File Dictionary v1.5.3</v-toolbar-title>
-        	<v-spacer></v-spacer>
-        	<v-btn class="ma-2" outlined color="white" v-if="( auth !== '' ) && mode === 'info'" @click="toggle( 'add_legal' )" ><v-icon left>mdi-plus-circle</v-icon>Add New Legal</v-btn>
-        	<v-btn class="ma-2" outlined color="white" v-if="( auth === '' )" @click="toggle( 'login' )"><v-icon left>mdi-login-variant</v-icon>Login</v-btn>
-        	<v-btn class="ma-2" outlined color="white" v-if="( auth !== '' )" @click="logout( )"><v-icon left>mdi-logout-variant</v-icon>Logout</v-btn>
-      	</v-app-bar>
-    </div>
+	<div>
+		<div class="d-none d-sm-flex">
+			<v-app-bar app color="primary" dark>
+				<v-toolbar-title class="headline">Street File Dictionary</v-toolbar-title>
+				<v-spacer></v-spacer>
+				<v-btn class="ma-2" outlined color="white" v-if="( auth !== '' ) && mode === 'info'" @click="toggle( 'add_legal' )" ><v-icon left>mdi-plus-circle</v-icon>Add New Legal</v-btn>
+				<v-btn class="ma-2" outlined color="white" v-if="( auth === '' )" @click="toggle( 'login' )"><v-icon left>mdi-login-variant</v-icon>Login</v-btn>
+				<v-btn class="ma-2" outlined color="white" v-if="( auth !== '' )" @click="logout( )"><v-icon left>mdi-logout-variant</v-icon>Logout</v-btn>
+			</v-app-bar>
+		</div>
+		<div class="d-flex d-sm-none">
+			<v-app-bar app color="primary" dark>
+				<v-toolbar-title class="headline">
+					<v-avatar>
+						<v-img max-height="48" max-width="48" src="img/icons/48x48.png"></v-img>
+					</v-avatar>
+				</v-toolbar-title>
+				<v-spacer></v-spacer>
+				<v-btn class="ma-2" color="white" light v-if="( auth !== '' ) && mode === 'info'" @click="toggle( 'add_legal' )" ><v-icon>mdi-plus-circle</v-icon></v-btn>
+				<v-btn class="ma-2" color="white" light v-if="( auth === '' )" @click="toggle( 'login' )"><v-icon>mdi-login-variant</v-icon></v-btn>
+				<v-btn class="ma-2" color="white" light v-if="( auth !== '' )" @click="logout( )"><v-icon>mdi-logout-variant</v-icon></v-btn>
+			</v-app-bar>
+		</div>
+	</div>
 </template>
 
 <script> 
@@ -62,7 +77,11 @@
           		[ "mdi-information", "Information", "info" ],
 				[ "mdi-plus-circle", "Add Street", "edit" ],
 				[ "mdi-login-variant", "Login", "login" ]
-			]
+			],
+			tools: [
+        		{ title: "Add New Legal" },
+        		{ title: "Logout" }
+      		]
 
       	} ),
 

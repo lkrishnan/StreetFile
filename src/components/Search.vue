@@ -59,8 +59,9 @@
 				headers: { 
 					"Cache-Control": "max-age=0, no-cache, no-store",
 					"Pragma": "no-cache"  
-				} 
-			} )
+				}
+			} ),
+			cancel_source: null
 
       	} ),
       
@@ -122,60 +123,73 @@
       
       	methods: {
         	getItems( v ){
-          		const _this = this,
-            		url = _this.ws.adm + "v1/query/streetfileall";
+				const _this = this;
 
-          		_this.loading = true;
+				if( v.length < 3 ){
+					_this.items = [ ];
+					_this.loading = false;
+					return
 
-				if( v.length > 2 ){
-					const legal_params = {
-							columns: "admkey",
-							filter: "admkey like '" + v.toUpperCase( ) + "%' and aliaslegalflag = 'L'",
-							group: "admkey"
-						},
-						alias_params = {
-							columns: "admkey",
-							filter: "admkey like '" + v.toUpperCase( ) + "%' and aliaslegalflag = 'A'",
-							group: "admkey"
-						};
-
-					_this.items.length = 0;
-					
-					axios.all( [ 
-						_this.axios_inst.get( `${ url }?${ JSONToURL( legal_params ) }` )
-							.then( function( response ){
-								return response.data;
-							} ),
-                    	_this.axios_inst.get( `${ url }?${ JSONToURL( alias_params ) }` )
-							.then( function( response ){
-								return response.data;
-							} )
-
-					] )
-					.then( axios.spread( ( legal_data, alias_data ) => {
-						legal_data.forEach( element => {
-							_this.items.push( { "text": element.admkey, "value": { "tag": "Legal", "admkey": element.admkey, "aliaslegalflag": "L" } } );
-						} );
-						alias_data.forEach( element => {
-							_this.items.push( { "text": element.admkey, "value": { "tag": "Alias", "admkey": element.admkey, "aliaslegalflag": "A" } } );
-						} );
-
-						_this.loading = false;
-
-					} ) )			
-					.catch( ex => {
-          				console.log( "parsing failed", ex );
-
-        			} );
-
-				}else{
-					_this.items.length = 0;
-				
 				}
 
-        	},
-        	clearResults( ){
-          		this.items.length = 0;
+				const url = _this.ws.adm + "v1/query/streetfileall",
+					params = {
+							columns: "admkey, aliaslegalflag",
+							filter: "admkey like '" + v.toUpperCase( ) + "%'",
+							group: "admkey, aliaslegalflag"
+						}
+
+				_this.loading = true;
+				_this.cancelSearch( );
+      			_this.cancel_source = axios.CancelToken.source( )
+
+				_this.axios_inst.get( `${ url }?${ JSONToURL( params ) }`, { cancelToken: _this.cancel_source.token } )
+					.then( function( response ){
+						_this.cancel_source = null
+						return response.data
+
+					} )
+					.then( legal_alias_data => { 
+						this.items = [ ];
+
+						legal_alias_data.forEach( element => {
+							_this.items.push( { 
+								"text": element.admkey, 
+								"value": { 
+									"tag": ( element.aliaslegalflag ? "Legal" : "Alias" ), 
+									"admkey": element.admkey, 
+									"aliaslegalflag": element.aliaslegalflag 
+								}
+
+							} );
+
+						} )
+
+						_this.loading = false;
+					
+					} )
+					.catch( thrown => {
+						if( axios.isCancel( thrown ) ){
+							//console.log('Request canceled', thrown.message);
+						
+						}else{
+							console.log( "parsing failed", thrown );
+						
+						}
+					
+					} )
+			
+			},
+			cancelSearch( ){
+				const _this = this
+
+      			if( _this.cancel_source ){
+        			_this.cancel_source.cancel( )
+
+      			}
+    		},
+			clearResults( ){
+          		this.items = [ ];
         
         	},
         	setStcode( ){

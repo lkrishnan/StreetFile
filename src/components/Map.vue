@@ -4,7 +4,7 @@
 </template>
 
 <script>
-    import Mapboxgl from "mapbox-gl";
+    import Maplibregl from "maplibre-gl";
     import MapStyle from "../mapstyle/streetfile.json";
     import JSONToURL from "../js/jsontourl";
     import axios from "axios";
@@ -52,8 +52,7 @@
                         preserveDrawingBuffer: navigator.userAgent.toLowerCase().indexOf("firefox") > -1
                     };
 
-                //Mapboxgl.accessToken = "pk.eyJ1IjoibGtyaXNobmFuIiwiYSI6InRMWkIzVVkifQ.PUIkfgrzDKtkS6NyXD4rFA";
-                _this.map = new Mapboxgl.Map( mapOptions );
+                _this.map = new Maplibregl.Map( mapOptions );
                 
                 let map = _this.map;
 
@@ -115,19 +114,39 @@
 
                 lyrs.forEach( lyr => {
                     if( !map.getLayer( lyr.id ) ){
-                        map.addLayer( {
-                            id: lyr.id,
-                            type: "line",
-                            source: lyr.source_id,
-                            layout: {
-                                "line-join": "round",
-                                "line-cap": "round"
-                            },
-                            paint: {
-                                "line-color": "#10F765",
-                                "line-width": 2
-                            }
-                        } );
+                        switch( lyr.id ){
+                            case "sel_road_lyr":
+                                map.addLayer( {
+                                    id: lyr.id,
+                                    type: "line",
+                                    source: lyr.source_id,
+                                    layout: {
+                                        "line-join": "round",
+                                        "line-cap": "round"
+                                    },
+                                    paint: {
+                                        "line-color": "#10F765",
+                                        "line-width": 2
+                                    }
+                                } );
+
+                                break;
+                            case "sel_addr_lyr":
+                                map.addLayer( {
+                                    id: lyr.id,
+                                    type: "circle",
+                                    source: lyr.source_id,
+                                    paint: {
+                                        "circle-color": "#10F765",
+                                        "circle-radius": 6
+                                    }
+                                } );
+
+                                break;
+
+                        }
+
+                        
                     }    
                 } );
 
@@ -136,84 +155,88 @@
                 const _this = this,
                     map = _this.map;
 
-                return coordinates.reduce( ( bounds, coord ) => { return bounds.extend( coord ); }, new Mapboxgl.LngLatBounds( coordinates[ 0 ], coordinates[ 1 ] ) );
+                return coordinates.reduce( ( bounds, coord ) => { return bounds.extend( coord ); }, new Maplibregl.LngLatBounds( coordinates[ 0 ], coordinates[ 1 ] ) );
                 
             },
-            /*selectRoad( ){
-                const _this = this,
-                    url = _this.ws.open + "v1/geojson/roads",
-                    params = { 
-                            geom_column: "the_geom",
-                            columns: "lstreetcod, rstreetcod",
-                            filter: "lstreetcod = " + _this.stcode + " or rstreetcod = " + _this.stcode 
-                        };
-
-                let map = _this.map;
-
-                _this.axios_inst.get( `${ url }?${ JSONToURL( params ) }` )
-                    .then( response => {
-                        return response.data;
-
-                    } )
-                    .then( geojson => { 
-                        const _this = this,
-                            map = _this.map;
-
-                        let coord_array = [ ];
-
-                        _this.addSource( "sel_road", { type: "geojson", data: geojson, generateId: true } );
-                        _this.addLayers( [ { id: "sel_road_lyr", source_id: "sel_road" } ] );
-                        geojson.features.forEach( feature => { 
-                            coord_array.push( ...feature.geometry.coordinates[ 0 ] );
-                        } );
-                        console.log( coord_array )
-                        map.fitBounds( _this.getBounds( coord_array ), { padding: 50 } );
-                                                
-                    } )
-                    .catch( ex => {
-                        console.log( "parsing failed", ex );
-
-                    } );
-  
-            }*/
             selectRoad( ){
                 const _this = this,
-                    url = _this.ws.gis + "v1/geojson/streets_ln",
-                    params = { 
-                            geom_column: "shape",
-                            columns: "lstreetcode as lstreetcod, rstreetcode as rstreetcod",
-                            filter: "lstreetcode = " + _this.stcode + " or rstreetcode = " + _this.stcode 
-                        };
+                    url = _this.ws.gis + "v1/geojson/",
+                    streets_params = { 
+                        geom_column: "shape",
+                        columns: "lstreetcode as lstreetcod, rstreetcode as rstreetcod",
+                        filter: "lstreetcode = " + _this.stcode + " or rstreetcode = " + _this.stcode 
+                        },
+                    addr_params = { 
+                        geom_column: "shape",
+                        columns: "num_addr",
+                        filter: "county_street_code = " + _this.stcode 
+                        };    
 
                 let map = _this.map;
 
-                _this.axios_inst.get( `${ url }?${ JSONToURL( params ) }` )
-                    .then( response => {
-                        return response.data;
+                axios.all( [ 
+					_this.axios_inst.get( `${ url + "streets_ln" }?${ JSONToURL( streets_params ) }` )
+						.then( response => {
+                            return response.data;
+						
+						} ),
+					_this.axios_inst.get( `${ url + "masteraddress_pt" }?${ JSONToURL( addr_params ) }` )
+						.then( response => {
+							return response.data;
 
-                    } )
-                    .then( geojson => { 
-                        const _this = this,
-                            map = _this.map;
+						} )
 
-                        let coord_array = [ ];
+				] )
+				.then( axios.spread( ( streets_geojson, addr_geojson ) => {
+					let coord_array = [ ],
+                        lyrs = [ ];
 
-                        _this.addSource( "sel_road", { type: "geojson", data: geojson, generateId: true } );
-                        _this.addLayers( [ { id: "sel_road_lyr", source_id: "sel_road" } ] );
-                        
-                        geojson.features.forEach( feature => { 
-                            //coord_array.push( ...feature.geometry.coordinates[ 0 ] );
-                            coord_array.push( ...feature.geometry.coordinates );
-                        } );
+                    const _this = this,
+                        map = _this.map,
+                        createLyr = ( geojson, source_id, lyr_id ) => {
+                            if( geojson ){
+                                _this.addSource( source_id, { type: "geojson", data: geojson, generateId: true } )
+                                lyrs.push( { id: lyr_id, source_id: source_id } )
 
-                        map.fitBounds( _this.getBounds( coord_array ), { padding: 50 } );
-                                                
-                    } )
-                    .catch( ex => {
-                        console.log( "parsing failed", ex );
+                                geojson.features.forEach( feature => { 
+                                    coord_array.push( ...feature.geometry.coordinates );
+                    
+                                } );
+                    
+                            }      
 
-                    } );
-  
+                        };
+                    
+                    //parse addr geojson and create a layer
+                    createLyr( streets_geojson, "sel_road", "sel_road_lyr"  )
+        
+                    //parse addr geojson and create a layer
+                    createLyr( addr_geojson, "sel_addr", "sel_addr_lyr"  )
+                    
+                    //add the layers to the map
+                    if( lyrs.length > 0 ){
+                        _this.addLayers( lyrs );
+                    
+                    }else{
+                        _this.clearLayer( [ "sel_road_lyr", "sel_addr_lyr"  ] )
+
+                    }
+                    
+                    //zoom to the extent of the added layers
+                    if( coord_array.length > 0 ){
+                        map.fitBounds( _this.getBounds( coord_array ), { padding: 50 }, { duration: 2000 } );
+
+                    }else{
+                        map.setCenter( [-80.84, 35.26] )
+                        map.zoomTo( 9, { duration: 2000 } );
+                    }
+                                
+        		} ) )
+        		.catch( ex => {
+          			console.log( "parsing failed", ex );
+
+        		} )  
+
             }
             
         }

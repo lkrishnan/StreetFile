@@ -1,3 +1,5 @@
 /* vendor stuff */
 /* @import "../node_modules/@arcgis/core/assets/esri/themes/dark/main.css"; */
-@import "../node_modules/mapbox-gl/dist/mapbox-gl.css";
+@import "../node_modules/maplibre-gl/dist/maplibre-gl.css";
+@import "../node_modules/@mdi/font/css/materialdesignicons.css";
+@import "../node_modules/fontsource-roboto/latin.css";

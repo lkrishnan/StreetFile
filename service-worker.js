@@ -10,87 +10,50 @@
 workbox.core.setCacheNameDetails( { prefix: "stfile" } );
 
 //Change this value every time before you build
-const LATEST_VERSION = "v1.5.3"
+const LATEST_VERSION = "v1.5.9.4"
 
-self.addEventListener('install', event => {
-	console.log( "Service Worker Installing…" );
-	//self.skipWaiting( );
+self.addEventListener( "install", event => {
+	console.log( "Service worker is Installing." );
 	
-  });
+} );
 
 //The activate handler takes care of cleaning up old caches
 self.addEventListener( "activate", ( event ) => {
-  
-	/*console.log( `%c ${LATEST_VERSION} `, "background: #ddd; color: #0000ff" )
-  	
+	console.log( `%c ${LATEST_VERSION} `, "background: #ddd; color: #0000ff" )
+       
 	if( caches ){
-    	caches.keys( ).then( ( arr ) => {
-      		arr.forEach( ( key ) => {
-        		if( key.indexOf( "stfile-precache" ) < -1 ){
-          			caches.delete( key ).then( ( ) => console.log( `%c Cleared ${key}`, "background: #333; color: #ff0000" ) )
-        		
+		caches.keys( ).then( ( arr ) => {
+			  arr.forEach( ( key ) => {
+				if( key.indexOf( "stfile-precache" ) < -1 ){
+					  caches.delete( key ).then( ( ) => console.log( `%c Cleared ${key}`, "background: #333; color: #ff0000" ) )
+				
 				}else{
-          			caches.open( key ).then( ( cache ) => {
-            			cache.match( 'version' ).then( ( res ) => {
-              				if( !res ){
-                				cache.put( 'version', new Response( LATEST_VERSION, { status: 200, statusText: LATEST_VERSION } ) )
-              				
+					  caches.open( key ).then( ( cache ) => {
+						cache.match( 'version' ).then( ( res ) => {
+							  if( !res ){
+								cache.put( 'version', new Response( LATEST_VERSION, { status: 200, statusText: LATEST_VERSION } ) )
+							  
 							}else if( res.statusText !== LATEST_VERSION ){
-                				caches.delete( key ).then( ( ) => console.log( `%c Cleared Cache ${LATEST_VERSION}`, "background: #333; color: #ff0000" ) )
-              				
+								caches.delete( key ).then( ( ) => console.log( `%c Cleared Cache ${LATEST_VERSION}`, "background: #333; color: #ff0000" ) )
+							  
 							}else{
 								console.log( `%c Great you have the latest version ${LATEST_VERSION}`, "background: #333; color: #00ff00" )
 							
 							} 
-            			
+						
 						} )
-          			
+					  
 					} )
-        		
+				
 				}
-      
+	  
 			} )
-    	
+		
 		} )
-  	}*/
+
+	  }
+
 } )
-
-// The fetch handler serves responses for same-origin resources from a cache. 
-// If no response is found, it populates the runtime cache with the response from the network before returning it to the page.
-self.addEventListener( "fetch", event => {
-
-} );
-/*self.addEventListener( "fetch", event => {
-	// Let the browser do its default thing
-  	// for non-GET requests.
-  	if (event.request.method != 'GET') return;
-
-  	// Prevent the default, and handle the request ourselves.
-  	event.respondWith(async function() {
-    	// Try to get the response from a cache.
-		if( caches ){
-			caches.keys( ).then( ( arr ) => {
-				arr.forEach( ( key ) => {
-
-				} )
-			} )
-
-
-    	const cache = await caches.open('dynamic-v1');
-    	const cachedResponse = await cache.match(event.request);
-
-    if (cachedResponse) {
-      // If we found a match in the cache, return it, but also
-      // update the entry in the cache in the background.
-      event.waitUntil(cache.add(event.request));
-      return cachedResponse;
-    }
-
-    // If we didn't find a match in the cache, use the network.
-    return fetch(event.request);
-  }());
-
-} )*/
 
 self.addEventListener( "message", ( event ) => {
 	if( event.data && event.data.hasOwnProperty( "type" ) ){
@@ -113,3 +76,34 @@ workbox.core.clientsClaim( )
 self.__precacheManifest = [ ].concat( self.__precacheManifest || [ ] )
 //workbox.precaching.suppressWarnings( ) // Only used with Vue CLI 3 and Workbox v3.
 workbox.precaching.precacheAndRoute( self.__precacheManifest, { } )
+
+// Start of CachFirst Strategy##################
+// all the api request which matchs the following pattern will use CacheFirst strategy for caching
+workbox.routing.registerRoute(
+	new RegExp( '\\.(?:css|js)' ),
+	new  workbox.strategies.CacheOnly( )
+
+);
+
+workbox.routing.registerRoute(
+	new RegExp('\\.(?:woff|woff2|eot|ttf|png|svg|gif|jpg|jpeg)'),
+	new  workbox.strategies.CacheFirst( )
+
+);
+
+/*workbox.routing.registerRoute(
+	"https://maps.mecklenburgcountync.gov/api",
+	workbox.strategies.networkFirst( {
+		networkTimeoutSeconds: 3,
+		cacheName: "dirt-api",
+		plugins: [
+		  new workbox.expiration.Plugin( {
+			maxEntries: 50,
+			maxAgeSeconds: 5 * 60, // 5 minutes
+		  } ),
+		],
+	
+	} )
+
+);*/
+// End of CachFirst Strategy####################

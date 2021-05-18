@@ -8,13 +8,17 @@
     "zip": "powershell Remove-Item stfile_bundle.zip -Recurse -Force && powershell Compress-Archive -Path dist/* -DestinationPath stfile_bundle.zip",
     "copy": "powershell Copy-Item –Path stfile_bundle.zip –Destination //gispolarisdev1v/c$/temp",
     "publish": "npm run zip && npm run copy",
-    "prod":  "powershell Copy-Item –Path dist/* –Destination //gisags2v/c$/inetpub/wwwroot/stfile -Recurse -Force"
+    "prod": "powershell Remove-Item //gisags2v/c$/inetpub/wwwroot/stfile/*.* -Recurse -Force && powershell Copy-Item –Path dist/* –Destination //gisags2v/c$/inetpub/wwwroot/stfile -Recurse -Force",
+    "dev2": "powershell Remove-Item //gispolarisdev1v/c$/inetpub/wwwroot/stfile/*.* -Recurse -Force && powershell Copy-Item –Path dist/* –Destination //gispolarisdev1v/c$/inetpub/wwwroot/stfile -Recurse -Force",
+    "dev": "powershell Remove-Item c:/www/stf/*.* -Recurse -Force && powershell Copy-Item –Path dist/* –Destination c:/www/stf -Recurse -Force"
   },
   "dependencies": {
+    "@mdi/font": "^5.9.55",
     "assert": "^2.0.0",
     "axios": "^0.21.1",
     "core-js": "^3.9.1",
-    "mapbox-gl": "^1.13.1",
+    "fontsource-roboto": "^4.0.0",
+    "maplibre-gl": "^1.14.0",
     "register-service-worker": "^1.7.2",
     "vue": "^2.6.11",
     "vuelidate": "^0.7.6",
