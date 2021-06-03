@@ -126,6 +126,15 @@
 						break
 
 					case "Add_Legal":
+						_this.$store.commit( "new_stinfo", [ {
+							aliaslegalflag: "L", 
+							staccess: "PUB", 
+							addrnumbers: "B",
+							parcelsattached: "N", 
+							stcontinuous: "Y",
+							roadtype: "Road",
+							reason: null
+						} ] )
 						_this.$router.push( { name: type } )
 						break
 

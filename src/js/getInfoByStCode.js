@@ -9,7 +9,7 @@ export default async function infoByStCode( stcode ){
 				"Pragma": "no-cache"  
 			}
 	  	} ),
-	  	url = store.getters[ "ws" ].adm + "v1/query/streetfilealldev",
+	  	url = store.getters[ "ws" ].adm + "v1/query/streetfileall",
 		getParams = ( stcode, aliaslegalflag ) => {
 			return {
 				columns: "objectid, countystcode, admkey, preaddrnum, streetname, streettype, standtype, addrnumsuf, municipality, lowerblock, upperblock, oldmunicipality, aliaslegalflag, editedagency, citystcode, directions, staccess, addrnumbers, parcelsattached, stcontinuous, roadtype, comments, reason, created_user, created_date, last_edited_user, last_edited_date, last_edited_agency",

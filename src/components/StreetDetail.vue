@@ -322,6 +322,16 @@
 
 				switch( route_name ){
 					case "Add_Alias":
+						_this.$store.commit( "new_stinfo", [ { 
+							countystcode: _this.stcode,
+							aliaslegalflag: "A",
+							staccess: "PUB", 
+							addrnumbers: "B",
+							parcelsattached: "N", 
+							stcontinuous: "Y",
+							roadtype: "Road",
+							reason: null
+						} ] );
 						this.$router.push( { name: route_name, params: { stcode: _this.stcode } } )
 						break;
 

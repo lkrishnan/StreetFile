@@ -270,23 +270,29 @@
 						break
 
 					case "Add_Legal": case "Add_Alias":
-						vm.new_stinfo = [ {
-								aliaslegalflag: ( to.name === "Add_Legal" ? "L" : "A" ), 
-								staccess: "PUB", 
-								addrnumbers: "B",
-								parcelsattached: "N", 
-								stcontinuous: "Y",
-								roadtype: "Road",
-								reason: null
-							} ]
+						if( !vm.new_stinfo ){
+							vm.new_stinfo = [ {
+									aliaslegalflag: ( to.name === "Add_Legal" ? "L" : "A" ), 
+									staccess: "PUB", 
+									addrnumbers: "B",
+									parcelsattached: "N", 
+									stcontinuous: "Y",
+									roadtype: "Road",
+									reason: null
+								} ]
 
-						if( to.name === "Add_Alias" ){
-							vm.new_stinfo[ 0 ].countystcode = to.params.stcode 
+							if( to.name === "Add_Alias" ){
+								vm.new_stinfo[ 0 ].countystcode = to.params.stcode 
+							}
+						
 						}
 						
 						break
 				
 				}
+
+				//hide or show the countystcode header 
+				vm.chngHeader( to.name )
 
   			} )
 		
@@ -483,6 +489,27 @@
 				_this.$router.go( -1 )
 			
 			},
+
+			chngHeader( route ){
+        		const _this = this,
+          			idx = _this.headers.findIndex( ( { value } ) => value === 'countystcode' );
+				
+					switch( route ){
+						case "Add_Legal":
+							if( idx > -1 ){
+								_this.headers.splice( idx, 1 );
+							}
+							
+							break
+						default:
+							if( idx == -1 ){
+								_this.headers.splice( 5, 0, { text: "County Code", value: "countystcode", sortable: false } );
+							}
+							
+							break
+					
+				}
+    		}
 
       		
 		}

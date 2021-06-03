@@ -73,8 +73,8 @@ export default new Vuex.Store( {
 	},
   	actions: {
 		async login( { commit }, loginData ){
-			//let token = ( await axios.post( "https://maps.mecklenburgcountync.gov/auth/v1/login", loginData ) ).data;
-			let token = ( await axios.post( "http://localhost:3000/v1/login", loginData ) ).data;
+			let token = ( await axios.post( "https://maps.mecklenburgcountync.gov/auth/v1/login", loginData ) ).data;
+			//let token = ( await axios.post( "http://localhost:3000/v1/login", loginData ) ).data;
 		
 			if( typeof token === 'object' && token !== null ){
 				commit( "auth", "error_" + Math.floor( Math.random( ) * 1000 ) + 1 )
@@ -97,8 +97,8 @@ export default new Vuex.Store( {
 			let update_instance = axios.create( {
 					headers: ( this.state.token.length > 0 ? { "Authorization": this.state.token } : { } )
 				} ),
-				//reply = ( await update_instance.post( "https://maps.mecklenburgcountync.gov/auth/v1/update", updateData ) ).data;
-				reply = ( await update_instance.post( "http://localhost:3000/v1/update", updateData ) ).data;
+				reply = ( await update_instance.post( "https://maps.mecklenburgcountync.gov/auth/v1/update", updateData ) ).data;
+				//reply = ( await update_instance.post( "http://localhost:3000/v1/update", updateData ) ).data;
 		
 			if( reply.result === "success" ){
 				router.go( -1 )
@@ -112,8 +112,8 @@ export default new Vuex.Store( {
 			let insert_instance = axios.create( {
 					headers: ( this.state.token.length > 0 ? { "Authorization": this.state.token } : { } )
 				} ),
-				//reply = ( await insert_instance.post( "https://maps.mecklenburgcountync.gov/auth/v1/insert", insertData ) ).data;
-				reply = ( await insert_instance.post( "http://localhost:3000/v1/insert", insertData ) ).data;
+				reply = ( await insert_instance.post( "https://maps.mecklenburgcountync.gov/auth/v1/insert", insertData ) ).data;
+				//reply = ( await insert_instance.post( "http://localhost:3000/v1/insert", insertData ) ).data;
 		
 			if( reply.result === "success" ){
 				router.go( -1 )
@@ -126,8 +126,8 @@ export default new Vuex.Store( {
 			let delete_instance = axios.create( {
 					headers: ( this.state.token.length > 0 ? { "Authorization": this.state.token } : { } )
 				} ),
-				//reply = ( await delete_instance.post( "https://maps.mecklenburgcountync.gov/auth/v1/delete", deleteData ) ).data;
-				reply = ( await delete_instance.post( "http://localhost:3000/v1/delete", deleteData ) ).data;
+				reply = ( await delete_instance.post( "https://maps.mecklenburgcountync.gov/auth/v1/delete", deleteData ) ).data;
+				//reply = ( await delete_instance.post( "http://localhost:3000/v1/delete", deleteData ) ).data;
 		
 			if( reply.result === "success" ){
 				if( this.state.stinfo.legal[ 0 ].objectid === deleteData.filter ){

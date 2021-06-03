@@ -9,7 +9,7 @@ export default async function infoByADMKey( admkey, aliaslegalflag ){
 				"Pragma": "no-cache"  
 			}
 	  	} ),
-	  	url = store.getters[ "ws" ].adm + "v1/query/streetfilealldev",
+	  	url = store.getters[ "ws" ].adm + "v1/query/streetfileall",
 		getParams = ( admkey, aliaslegalflag ) => {
 			return {
 				columns: "countystcode, lowerblock, upperblock",
