@@ -1,5 +1,5 @@
 <template>
-  	<v-container class="my-10" v-if="mode === 'login'">
+  	<v-container class="my-5">
     	<v-row justify="center">
       		<v-col sm="6">
         		<v-card outlined v-model="validating" :disabled="(validating === 1)"> 
@@ -22,7 +22,7 @@
 								@blur="$v.password.$touch( )"  
 								required>
 							</v-text-field>
-							<v-row class="mt-4">
+							<v-row class="my-1">
 								<v-btn @click="login" outlined color="primary"  class="ml-4">Login</v-btn>
 								<v-btn @click="back" outlined color="primary" class="ml-4">Back</v-btn>
 								<p v-if="auth.indexOf( 'error' ) > -1" class="ml-4 red--text">The entered login or password is wrong.</p>
@@ -63,13 +63,24 @@
     	},  
     
 		computed: {
-      		mode( ){
-        		return this.$store.state.mode;
-      		
-			},
       		auth( ){
         		return this.$store.state.token;
       		
+			},
+			passwordErrors( ){
+        		const errors = [ ]
+        
+				if( !this.$v.password.$dirty ){
+					return errors
+				} 
+          
+        		!this.$v.password.required && errors.push( "Password is required." )
+        
+        		return errors
+      		
+			},
+			stcode( ){
+				return this.$route.params.stcode; 
 			},
       		userNameErrors( ){
         		const errors = [ ]
@@ -81,18 +92,6 @@
 				!this.$v.userName.required && errors.push( "User Name is required." )
 
 				return errors
-      		
-			},
-      		passwordErrors( ){
-        		const errors = [ ]
-        
-				if( !this.$v.password.$dirty ){
-					return errors
-				} 
-          
-        		!this.$v.password.required && errors.push( "Password is required." )
-        
-        		return errors
       		
 			}
     	
@@ -110,22 +109,35 @@
       		
 			},
       		back( ){
-        		const _this = this;
+        		const _this = this
 
-        		_this.userName = "";
-        		_this.password = "";
-        		this.$v.$reset( );
-        		this.$store.commit( "mode", "info" );
-      		
+				//reset login form
+        		_this.userName = ""
+        		_this.password = ""
+        		_this.$v.$reset( )
+
+				//kick back to the search/detail screen
+				_this.$router.go( -1 )
+        	      		
 			},
 		    authenticate( ){
-				if( this.auth === '' || this.auth.indexOf( "error" ) > -1 ){
-					this.$store.commit( "mode", "login" );
-				}else{
-					this.$store.commit( "mode", "info" );
+				const _this = this
+
+				if( _this.auth !== '' || _this.auth.indexOf( "error" ) < 0 ){
+					_this.$router.go( -1 )
+
 				}
 
-				this.validating = 0;
+				//if( _this.auth === '' || _this.auth.indexOf( "error" ) > -1 ){
+				//	_this.$store.commit( "mode", "login" )
+				
+				//}else{
+					//kick back to the search/detail screen
+					//_this.$router.go( -1 )
+				
+				//}
+
+				_this.validating = 0;
 			
 			}
 

@@ -1,12 +1,11 @@
 <template>
-  	<v-container v-if="( [ 'edit_legal', 'edit_alias', 'add_alias' ].includes( mode ) && stcode ) || ( [ 'add_legal' ].includes( mode ) )">
-    	<v-form v-model="valid" ref="form">
-      		<v-row>
-        		<v-col cols="12">
-          			<v-card class="my-5 pa-5">
-            			<v-card-title v-if="[ 'edit_legal' ].includes( mode )">Edit Legal Street Name</v-card-title>
-            			<v-card-title v-if="[ 'edit_alias' ].includes( mode )">Edit selected Alias Street Name</v-card-title>
-            			<v-row>
+  	<v-container>
+    	<v-form v-model="valid" ref="form" v-if="new_stinfo">
+			<v-row>
+				<v-col cols="12">
+					<v-card class="my-5 pa-5">
+						<v-card-title>{{ title }}</v-card-title>
+						<v-row>
               				<v-col cols="12">
                 				<v-data-table 
 									:headers="headers" 
@@ -208,9 +207,9 @@
 								</v-data-table> 
               				</v-col>
             			</v-row>
-          			</v-card>
-        		</v-col>
-      		</v-row>
+					</v-card>
+				</v-col>
+			</v-row>
       		<v-row>
         		<v-col cols="12">
           			<v-alert
@@ -236,17 +235,62 @@
 					</v-btn>
         		</v-col>
       		</v-row>
-    	</v-form>
+		</v-form>
   	</v-container>
 </template>
 
 <script>
-  	import ObjDiffs from "../js/objdiffs";
-	import ObjToUppercase from "../js/objtouppercase";
-  	import FormatADMKey from "../js/formatADMKey";
-
+  	import FormatADMKey from "../js/formatADMKey"
+	import GetInfoByOID from "../js/getInfoByOID"
+	import GetInfoByStCode from "../js/getInfoByStCode"
+	import ObjDiffs from "../js/objdiffs"
+	import ObjToUppercase from "../js/objtouppercase"
+  	
   	export default {
     	name: "edit",
+
+		beforeRouteEnter( to, from, next ){
+			next( async vm => {
+    			switch( to.name ){
+					case "Edit_Legal": case "Edit_Alias":
+						if( !vm.new_stinfo ){ //fill new_stinfo with data to display on the edit form 
+							vm.new_stinfo = await GetInfoByOID( to.params.oid )
+							vm.stcode = vm.new_stinfo[ 0 ].countystcode
+
+							if( vm.stinfo.legal.length === 0 && vm.stinfo.alias.length === 0 ){ //fill stinfo with data for doing edit comparison
+								vm.stinfo = await GetInfoByStCode( vm.stcode )
+
+							}
+
+						}else{
+							vm.stcode = vm.new_stinfo[ 0 ].countystcode
+							
+						}
+						
+						break
+
+					case "Add_Legal": case "Add_Alias":
+						vm.new_stinfo = [ {
+								aliaslegalflag: ( to.name === "Add_Legal" ? "L" : "A" ), 
+								staccess: "PUB", 
+								addrnumbers: "B",
+								parcelsattached: "N", 
+								stcontinuous: "Y",
+								roadtype: "Road",
+								reason: null
+							} ]
+
+						if( to.name === "Add_Alias" ){
+							vm.new_stinfo[ 0 ].countystcode = to.params.stcode 
+						}
+						
+						break
+				
+				}
+
+  			} )
+		
+		},
     	
 		data: ( ) => ( {
       		headers: [
@@ -266,24 +310,29 @@
 				{ text: "Access", value: "staccess", sortable: false },
 				{ text: "Continuous", value: "stcontinuous", sortable: false },
 				{ text: "Parcels Attached", value: "parcelsattached", sortable: false }
+			
 			],
 			headers3: [
 				{ text: "Directions to Street", value: "directions", sortable: false },
 				{ text: "Comments", value: "comments", sortable: false },
 				{ text: "Reason for Name Change", value: "reason", sortable: false }
+			
 			],
 			addrnumbers: [
 				{ value: "B", text: "ODD AND EVEN" },
 				{ value: "E", text: "EVEN ONLY" },
 				{ value: "O", text: "ODD ONLY" }
+			
 			],
 			staccess: [
 				{ value: "PUB", text: "PUBLIC" },
 				{ value: "PVT", text: "PRIVATE" }
+			
 			],
 			roadtype: [
 				{ value: "Road", text: "ROAD" },
 				{ value: "NamedDriveway", text: "DRIVEWAY" }
+			
 			],
 			reason: [
 				{ value: "AL", text: "ALIAS NAME ONLY" },
@@ -293,6 +342,7 @@
 				{ value: "PC", text: "PLANNING COMMISSION" },
 				{ value: "SD", text: "SUBDIVISION" },
 				{ value: null, text: "NA" }
+			
 			],
 			prefixes: [ "N", "S", "W", "E","" ],
 			sttypes: [ "AL", "AV", "BV", "BY", "CR", "CS", "CT", "CV", "DR", "EP", "EX", "FR", "HY", "LN", "LP", "PL", "PY", "RA", "RD", "RN", "RW", "ST", "TC", "TL", "TR", "WY", "" ],
@@ -303,41 +353,50 @@
 			valid: false,
 			stname_rules: [
 				v => !!v || 'Street Name is required'
+			
 			],
 			municipality_rules: [
 				v => !!v || 'Municipality is required'
+			
 			],
 			citystcode_rules: [
 				v => !!v || 'City Code is required'
+			
 			],
 			nochanges: false,
-			show_addalias: false
+			stcode: null
 
     	} ),
 
     	computed: {
-			ws( ){
-				return this.$store.state.ws;
+			new_stinfo: {
+      			set( new_stinfo ){
+					this.$store.commit( "new_stinfo", new_stinfo )
+									
+				},
+      			get( ){
+					return this.$store.state.new_stinfo
+      			
+				}
+							
 			},
-			stcode( ){
-				return this.$store.state.stcode;
+			stinfo: {
+      			set( stinfo ){
+					this.$store.commit( "stinfo", stinfo )
+									
+				},
+      			get( ){
+					return this.$store.state.stinfo
+      			
+				}
+							
 			},
-			mode( ){
-				return this.$store.state.mode;
+			route_name( ){
+				return this.$route.name; 
 			},
-			stinfo( ){
-				return this.$store.state.stinfo;
-			},
-			new_stinfo( ){
-				return this.$store.state.new_stinfo;
+			title( ){
+				return this.$route.meta.title
 			}
-
-    	},
-
-    	watch: {
-      		mode: function( ){
-        		this.chngHeader( );
-      		}
 
     	},
 
@@ -346,46 +405,34 @@
         		const _this = this;
 
 				if( _this.$refs.form.validate( ) ){
-					switch( _this.mode ){
-						case "edit_legal": case "edit_alias":
-							_this.edit( );
-						break;
+					switch( _this.route_name ){
+						case "Edit_Legal": case "Edit_Alias":
+							_this.edit( )
+						break
 
-						case "add_legal": case "add_alias":
-							_this.add( );
-						break;  
+						case "Add_Legal": case "Add_Alias":
+							_this.add( )
+						break
 
 					}
 				
 				}
+
       		},
-      		edit( ){
+
+			edit( ){
         		const _this = this,
 					change_row = ObjDiffs( 
-						( _this.mode == "edit_alias" ? _this.stinfo.alias.find( x => x.objectid === _this.new_stinfo[ 0 ].objectid ) : _this.stinfo.legal[ 0 ] ), //old value
+						( _this.route_name == "Edit_Alias" ? _this.stinfo.alias.find( x => x.objectid === _this.new_stinfo[ 0 ].objectid ) : _this.stinfo.legal[ 0 ] ), //old value
 						_this.new_stinfo[ 0 ] ); //new value
 
         		if( Object.keys( change_row ).length > 0 ){
           			_this.nochanges = false;
 
-					let update_row = { };
-						//insert_row = { };
-
-          			/*if( change_row.hasOwnProperty( "municipality" ) ){
-            			//change the existing legal street into an alias and add a new legal row into the table
-            			update_row.aliaslegalflag = "A";
-            
-						const { objectid, ...temp } = _this.new_stinfo[ 0 ];
-						insert_row = { ...temp };
-						insert_row.aliaslegalflag = "L";
-						insert_row.admkey = FormatADMKey( _this.new_stinfo[ 0 ].preaddrnum, _this.new_stinfo[ 0 ].streetname, _this.new_stinfo[ 0 ].streettype,
-						_this.new_stinfo[ 0 ].addrnumsuf, _this.new_stinfo[ 0 ].municipality, _this.new_stinfo[ 0 ].staccess, _this.new_stinfo[ 0 ].roadtype );  
-
-          			}else{*/
-					//just update the attributes
-					let add_admkey = Object.keys( change_row ).some( key => { 
-						return [ "preaddrnum", "streetname", "streettype", "addrnumsuf", "municipality", "staccess", "roadtype" ].includes( key ) 
-					} );
+					let update_row = { },
+						add_admkey = Object.keys( change_row ).some( key => { 
+							return [ "preaddrnum", "streetname", "streettype", "addrnumsuf", "municipality", "staccess", "roadtype" ].includes( key ) 
+						} );
 
 					update_row = { ...change_row };
 
@@ -394,8 +441,6 @@
 							_this.new_stinfo[ 0 ].addrnumsuf, _this.new_stinfo[ 0 ].municipality, _this.new_stinfo[ 0 ].staccess, _this.new_stinfo[ 0 ].roadtype );  
 					
 					}
-          
-          			//}
 
 					if( Object.keys( update_row ).length > 0 ){
 						//update the specific row
@@ -406,18 +451,14 @@
 					
 					}
 
-					/*if( Object.keys( insert_row ).length > 0 ){
-						//insert the new legal row
-						_this.$store.dispatch( "insert", { data: JSON.stringify( insert_row ) } );
-					
-					}*/
-
         		}else{
           			_this.nochanges = true;
 
         		}
+
       		},
-      		add( ){
+
+			add( ){
 				const _this = this;
 
 				if( _this.$refs.form.validate( ) ){
@@ -435,33 +476,15 @@
 				}
 
       		},
-      		cancel( ){
-        		this.$store.commit( "mode", "info" );
+      		
+			cancel( ){
+				const _this = this;
+        		
+				_this.$router.go( -1 )
+			
+			},
 
-      		},
-      		chngHeader( ){
-        		const _this = this,
-          			idx = _this.headers.findIndex( ( { value } ) => value === 'countystcode' );
-
-				switch( _this.mode ){
-					case "add_legal":
-						if( idx > -1 ){
-							_this.headers.splice( idx, 1 );
-						}
-						
-						break;
-
-					default:
-						if( idx == -1 ){
-							_this.headers.splice( 5, 0, { text: "County Code", value: "countystcode", sortable: false } );
-						}
-						
-						break;
-				
-				}
-
-    		}
-
+      		
 		}
 
   	}

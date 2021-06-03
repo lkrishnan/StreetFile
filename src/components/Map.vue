@@ -23,18 +23,20 @@
 					"Pragma": "no-cache"  
 				}
       		} )
+              
         } ),
         computed: {
             ws( ){
                 return this.$store.state.ws;
             },
-            stcode( ){
-                return this.$store.state.stcode;
-            }
+			stcode( ){
+				return this.$route.params.stcode; 
+			}
             
         },
         watch: {
             stcode: "selectRoad"
+
         },
         methods: {
             isIEorEDGE( ){

@@ -1,5 +1,5 @@
 <template>
-  	<v-container v-if="(mode === 'info') && stcode">
+  	<v-container>
     	<v-row>
       		<v-col cols="12">
         		<v-card class="my-5 pa-5">
@@ -8,8 +8,8 @@
 							<v-card-title>Legal Street Name</v-card-title>
 						</v-col>
 						<v-col col="1" class="d-flex justify-end">
-							<v-btn class="ma-2" color="primary" @click="takeAction( 'delete_legal', 0 )" v-if="( auth !== '' && stinfo.alias.length == 0 )" ><v-icon left>mdi-trash-can</v-icon>Delete</v-btn>
-							<v-btn class="ma-2" color="primary" @click="takeAction( 'edit_legal', 0 )" v-if="( auth !== '' )" ><v-icon left>mdi-file-edit</v-icon>Edit</v-btn>
+							<v-btn class="ma-2" color="primary" @click="takeAction( 'Delete_Legal', 0 )" v-if="( auth !== '' && stinfo.alias.length == 0 )" ><v-icon left>mdi-trash-can</v-icon>Delete</v-btn>
+							<v-btn class="ma-2" color="primary" @click="takeAction( 'Edit_Legal', 0 )" v-if="( auth !== '' )" ><v-icon left>mdi-file-edit</v-icon>Edit</v-btn>
 						</v-col>
 					</v-row>
           			<v-row>
@@ -80,22 +80,19 @@
       		</v-col>
     	</v-row>
     	<v-row>
-			<v-col cols="12" v-if="stcode">
-				<Map /> 
-				<!--<v-card class="my-5">-->
-					<!--<EsriMap />-->
-				<!--</v-card>-->  
+			<v-col cols="12">
+				<Map />  
 			</v-col>
     	</v-row>
-    	<v-row v-if="stinfo.alias.length > 0">
+    	<v-row v-if="( stinfo.alias.length > 0 || ( stinfo.alias.length == 0 && auth !== '' ) )">
 			<v-col cols="12">
 				<v-card class="my-5 pa-5">
 					<v-row>
 						<v-col col="11">
-						<v-card-title>Alias Street Names</v-card-title>
+						<v-card-title>{{ ( stinfo.alias.length > 0 ? "Alias Street Names" : "" ) }}</v-card-title>
 						</v-col>
 						<v-col col="1" class="d-flex justify-end">
-						<v-btn class="ma-2" color="primary" @click="takeAction( 'add_alias' )" v-if="( auth !== '' )" ><v-icon left>mdi-plus-circle</v-icon>Add New Alias</v-btn>
+						<v-btn class="ma-2" color="primary" @click="takeAction( 'Add_Alias' )" v-if="( auth !== '' )" ><v-icon left>mdi-plus-circle</v-icon>Add New Alias</v-btn>
 						</v-col>
 					</v-row>
 					<v-expansion-panels inset>
@@ -106,8 +103,8 @@
 										{{ item.admkey }}
 									</v-col>
 									<v-col col="1" class="d-flex justify-end">
-										<v-btn class="ma-2" color="primary" @click="takeAction( 'delete_alias', index )" v-if="( auth !== '' )" ><v-icon left>mdi-trash-can</v-icon>Delete</v-btn>
-										<v-btn class="ma-2" color="primary" @click="takeAction( 'edit_alias', index )" v-if="( auth !== '' )" ><v-icon left>mdi-file-edit</v-icon>Edit</v-btn>
+										<v-btn class="ma-2" color="primary" @click="takeAction( 'Delete_Alias', index )" v-if="( auth !== '' )" ><v-icon left>mdi-trash-can</v-icon>Delete</v-btn>
+										<v-btn class="ma-2" color="primary" @click="takeAction( 'Edit_Alias', index )" v-if="( auth !== '' )" ><v-icon left>mdi-file-edit</v-icon>Edit</v-btn>
 									</v-col>
 								</v-row>
 							</v-expansion-panel-header>
@@ -180,18 +177,15 @@
 </template>
 
 <script>
-  	import JSONToURL from "../js/jsontourl";
-  	import FormatDate from "../js/formatDate";
-  	import axios from "axios";
-	import Map from "./Map.vue";
+  	import GetInfoByStcode from "../js/getInfoByStCode"
+	import FormatDate from "../js/formatDate"
 	
 	export default {
     	name: "streetdetail",
 
     	components: {
-      		//EsriMap: ( ) => import (/* webpackChunkName: "esrimap"*/"./EsriMap.vue")
-			//EsriMap
-			Map
+      		Map: ( ) => import (/* webpackChunkName: "map"*/"./Map.vue")
+			
     	},
 
     	mounted: function( ){
@@ -251,128 +245,110 @@
 				"PC": "PLANNING COMMISSION",
 				"SD": "SUBDIVISION",
 				null: "NA"
-			},
-      		axios_inst: axios.create( { 
-        		headers: { 
-					"Cache-Control": "max-age=0, no-cache, no-store",
-					"Pragma": "no-cache"  
-				}
-      		} )
+			}
 
     	} ),
 
     	computed: {
-      		ws( ){
-          		return this.$store.state.ws;
-      		},
-      		stcode( ){
-          		return this.$store.state.stcode;
-      		},
-      		stinfo( ){
-          		return this.$store.state.stinfo;
-      		},
-      		new_stinfo( ){
-          		return this.$store.state.new_stinfo;
-      		},
-      		mode( ){
-        		return this.$store.state.mode;
-      		},
       		auth( ){
-        		return this.$store.state.token; 
-      		}
+        		return this.$store.state.token
 
+      		},
+			new_stinfo( ){
+          		return this.$store.state.new_stinfo
+
+      		},
+			stcode( ){
+				return this.$route.params.stcode
+
+			},
+			stinfo( ){
+          		return this.$store.state.stinfo
+
+      		},
+      		ws( ){
+          		return this.$store.state.ws
+
+      		}
+      		
     	},
 
     	watch: {
       		stcode: function( ){
-        		this.setInfo( );
+        		this.setInfo( )
       		}
 
     	},
-		
+
     	methods: {
-      		setInfo( ){
-        		const _this = this,
-          			stcode = _this.stcode,
-          			url = _this.ws.adm + "v1/query/streetfileall",
-          			legal_params = {
-            			columns: "objectid, countystcode, admkey, preaddrnum, streetname, streettype, standtype, addrnumsuf, municipality, lowerblock, upperblock, oldmunicipality, aliaslegalflag, editedagency, citystcode, directions, staccess, addrnumbers, parcelsattached, stcontinuous, roadtype, comments, reason, created_user, created_date, last_edited_user, last_edited_date, last_edited_agency",
-            			filter: "countystcode = '" + stcode + "' and aliaslegalflag = 'L'"
-          			},
-					alias_params = {
-						columns: "objectid, countystcode, admkey, preaddrnum, streetname, streettype, addrnumsuf, municipality, lowerblock, upperblock, oldmunicipality, aliaslegalflag, editedagency, citystcode, directions, staccess, addrnumbers, parcelsattached, stcontinuous, roadtype, comments, reason, created_user, created_date, last_edited_user, last_edited_date, last_edited_agency",
-						filter: "countystcode = '" + stcode + "' and aliaslegalflag = 'A'"
-					};
+			formatTheDate( input_date ){
+        		return FormatDate( new Date( input_date ), "MON DD, YYYY" ) + " " + new Date( input_date ).toLocaleTimeString( );
+      		
+			},
 
-				axios.all( [ 
-					_this.axios_inst.get( `${ url }?${ JSONToURL( legal_params ) }` )
-						.then( response => {
-							return response.data;
-						
-						} ),
-					_this.axios_inst.get( `${ url }?${ JSONToURL( alias_params ) }` )
-						.then( response => {
-							return response.data;
+			async setInfo( ){
+        		try{
+					const _this = this,
+          				stcode = _this.stcode;
 
-						} )
+					if( stcode.toString( ).match( /^[0-9]{1,10}$/ ) ){ //check if stcode is 1-10 digit number
+						const data = await GetInfoByStcode( stcode )
 
-				] )
-				.then( axios.spread( ( legal_data, alias_data ) => {
-					_this.$store.commit( "stinfo", { 
-						legal: legal_data, 
-						alias: alias_data
-					} );
-            
-        		} ) )
-        		.catch( ex => {
-          			console.log( "parsing failed", ex );
+						if( data.legal.length > 0 || data.alias.length > 0 ){
+							_this.$store.commit( "stinfo", data )
+					
+						}else{
+							throw "Bad search string was passed in the URL"
 
-        		} )  
-        
+						}
+
+					}else{
+						throw "Bad search string was passed in the URL"
+
+					}
+					
+				}
+				catch( error ){
+					console.log( "Parsing Failed:", error )
+					//replace the erroneous route with the Search route
+					this.$router.replace( { name: "Search" } )
+				
+				}
+				
       		},
-      		takeAction( mode, idx ){
+
+      		takeAction( route_name, idx ){
         		const _this = this;
 
-				switch( mode ){
-					case "add_alias":
-						_this.$store.commit( "new_stinfo", [ { 
-							countystcode: _this.stcode,
-							aliaslegalflag: "A",
-							staccess: "PUB", 
-							addrnumbers: "B",
-							parcelsattached: "N", 
-							stcontinuous: "Y",
-							roadtype: "Road",
-							reason: null
-						} ] );
+				switch( route_name ){
+					case "Add_Alias":
+						this.$router.push( { name: route_name, params: { stcode: _this.stcode } } )
 						break;
 
-					case "delete_legal":
+					case "Delete_Legal":
 						//delete the specific row
 						this.$store.dispatch( "delete", { filter: _this.stinfo.legal[ idx ].objectid } );
 						break;
 
-					case "delete_alias":
+					case "Delete_Alias":
 						//delete the specific row
 						this.$store.dispatch( "delete", { filter: _this.stinfo.alias[ idx ].objectid } );
 						break;
 
-					case "edit_legal": 
+					case "Edit_Legal": 
 						var { created_user, created_date, last_edited_user, last_edited_date, last_edited_agency, ...temp } = _this.stinfo.legal[ idx ];
 						this.$store.commit( "new_stinfo", [ { ...temp } ] );
+						this.$router.push( { name: route_name, params: { oid: _this.stinfo.alias[ idx ].objectid  } } )
 						break;
-					case "edit_alias":
+
+					case "Edit_Alias":
 						var { created_user, created_date, last_edited_user, last_edited_date, last_edited_agency, ...temp } = _this.stinfo.alias[ idx ];
 						this.$store.commit( "new_stinfo", [ { ...temp } ] );
+						this.$router.push( { name: route_name, params: { oid: _this.stinfo.alias[ idx ].objectid  } } )
 						break;
+				
 				}
 
-        		this.$store.commit( "mode", mode );
-      
-      		},
-
-      		formatTheDate( input_date ){
-        		return FormatDate( new Date( input_date ), "MON DD, YYYY" ) + " " + new Date( input_date ).toLocaleTimeString( );
       		}
 
     	} 

@@ -1,44 +1,70 @@
 <template>
-	<v-app>
-		<MainToolbar />
+	<v-app >
+		<v-app-bar app color="primary" dark>
+			<v-toolbar-title class="headline">
+				<div class="d-none d-sm-flex">
+					Street File Dictionary
+				</div>
+				<v-avatar class="d-flex d-sm-none">
+					<v-img max-height="48" max-width="48" src="img/icons/48x48.png"></v-img>
+				</v-avatar>
+			</v-toolbar-title>
+			<v-spacer></v-spacer>
+			<!--Buttons for big screen -->
+			<v-btn class="ma-2 d-none d-sm-flex" outlined color="white" v-if="( auth !== '' && [ 'Search', 'Detail' ].includes( route_name ) )" @click="takeAction( 'Add_Legal' )" >
+				<v-icon left>mdi-plus-circle</v-icon>Add New Legal
+			</v-btn>
+			<v-btn class="ma-2 d-none d-sm-flex" outlined color="white" v-if="( auth === '' )" @click="takeAction( 'Login' )">
+				<v-icon left>mdi-login-variant</v-icon>Login
+			</v-btn>
+			<v-btn class="ma-2 d-none d-sm-flex" outlined color="white" v-if="( auth !== '' )" @click="takeAction( 'Logout' )">
+				<v-icon left>mdi-logout-variant</v-icon>Logout
+			</v-btn>
+			<!--Buttons for small screen -->
+			<v-btn class="ma-2 d-flex d-sm-none" color="white" light v-if="( auth !== '' && [ 'Search', 'Detail' ].includes( route_name ) )" @click="takeAction( 'Add_Legal' )" >
+				<v-icon>mdi-plus-circle</v-icon>
+			</v-btn>
+			<v-btn class="ma-2 d-flex d-sm-none" color="white" light v-if="( auth === '' )" @click="takeAction( 'Login' )">
+				<v-icon>mdi-login-variant</v-icon>
+			</v-btn>
+			<v-btn class="ma-2 d-flex d-sm-none" color="white" light v-if="( auth !== '' )" @click="takeAction( 'Logout' )">
+				<v-icon>mdi-logout-variant</v-icon>
+			</v-btn>
+		</v-app-bar>
 		<v-main class="grey lighten-4">
-			<Login />
-			<Information />
-			<Edit />
+			<router-view />
 		</v-main>
 		<v-snackbar bottom right :value="updateExists" :timeout="-1" color="primary">
     		An update is available
     		<v-btn text @click="refreshApp">Update</v-btn>
   		</v-snackbar>
-  	</v-app>
+	</v-app>
 </template>
 
 <script>
-	import MainToolbar from "./components/MainToolbar.vue";
-  	import Login from "./components/Login.vue";
-  	import Information from "./components/Information.vue";
-  	import Edit from "./components/Edit.vue";
-	
-  	export default {
+	export default {
     	name: "App",
-    	
-		components: {
-      		MainToolbar,
-      		Login, 
-      		Information,
-      		Edit
-    	},
-  		
-		data( ){
-			return {
-				// refresh variables
-				refreshing: false,
-				registration: null,
-				updateExists: false,
-			}
 
-    	},
-  	    
+		computed: {
+        	auth( ){
+          		return this.$store.state.token
+        	},
+			new_stinfo( ){
+          		return this.$store.state.new_stinfo
+        	},
+			show_search( ){
+				return this.$store.state.show_search
+
+			},
+			stinfo( ){
+          		return this.$store.state.stinfo
+        	},
+			route_name( ){
+				return this.$route.name; 
+			}
+      
+      	},
+    	
 		created( ){
 			// Listen for our custom event from the SW registration
 			document.addEventListener( 'swUpdated', this.updateAvailable, { once: true } )
@@ -56,8 +82,57 @@
 			}
 
     	},
-  
+		
+		data( ){
+			return {
+				drawer: false,
+				items: [
+					[ "mdi-information", "Information", "info" ],
+					[ "mdi-plus-circle", "Add Street", "edit" ],
+					[ "mdi-login-variant", "Login", "login" ]
+
+				],
+				tools: [
+					{ title: "Add New Legal" },
+					{ title: "Logout" }
+
+				],
+				// refresh variables
+				refreshing: false,
+				registration: null,
+				updateExists: false,
+			}
+
+    	},
+
 		methods: {
+			takeAction( type ){
+          		const _this = this
+
+				switch( type ){
+					case "Login":
+						_this.$store.commit( "show_search", false )
+						_this.$router.push( { name: type } )
+						break
+
+					case "Logout":
+						localStorage.removeItem( "token" )
+          				this.$store.commit( "auth", "" )
+						
+						if( [ "Edit_Legal", "Edit_Alias", "Add_Legal", "Add_Alias" ].includes( _this.$route.name ) ){
+							_this.$router.push( { name: "Search" } )
+						}
+						
+						break
+
+					case "Add_Legal":
+						_this.$router.push( { name: type } )
+						break
+
+				}
+
+        	},
+
 			// Store the SW registration so we can send it a message
 			// We use `updateExists` to control whatever alert, toast, dialog, etc we want to use
 			// To alert the user there is an update they need to refresh for

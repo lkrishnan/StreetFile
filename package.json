@@ -16,11 +16,11 @@
     "@mdi/font": "^5.9.55",
     "assert": "^2.0.0",
     "axios": "^0.21.1",
-    "core-js": "^3.9.1",
     "fontsource-roboto": "^4.0.0",
     "maplibre-gl": "^1.14.0",
     "register-service-worker": "^1.7.2",
     "vue": "^2.6.11",
+    "vue-router": "^3.5.1",
     "vuelidate": "^0.7.6",
     "vuetify": "^2.4.8",
     "vuex": "^3.6.2"
