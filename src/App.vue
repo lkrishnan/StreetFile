@@ -127,6 +127,9 @@
 
 					case "Add_Legal":
 						_this.$store.commit( "new_stinfo", [ {
+							preaddrnum: null, 
+							streettype: null,
+							addrnumsuf: null, 
 							aliaslegalflag: "L", 
 							staccess: "PUB", 
 							addrnumbers: "B",

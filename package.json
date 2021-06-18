@@ -5,12 +5,12 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build --modern",
+    "prod": "powershell Remove-Item //gisags2v/c$/inetpub/wwwroot/stfile/* -Recurse -Force && powershell Copy-Item –Path dist/* –Destination //gisags2v/c$/inetpub/wwwroot/stfile -Recurse -Force",
+    "dev": "powershell Remove-Item //gispolarisdev1v/c$/inetpub/wwwroot/stfile/* -Recurse -Force && powershell Copy-Item –Path dist/* –Destination //gispolarisdev1v/c$/inetpub/wwwroot/stfile -Recurse -Force",
+    "dev2": "powershell Remove-Item C://www/stf/* -Recurse -Force && powershell Copy-Item –Path dist/* –Destination C://www/stf -Recurse -Force",
     "zip": "powershell Remove-Item stfile_bundle.zip -Recurse -Force && powershell Compress-Archive -Path dist/* -DestinationPath stfile_bundle.zip",
     "copy": "powershell Copy-Item –Path stfile_bundle.zip –Destination //gispolarisdev1v/c$/temp",
-    "publish": "npm run zip && npm run copy",
-    "prod": "powershell Remove-Item //gisags2v/c$/inetpub/wwwroot/stfile/*.* -Recurse -Force && powershell Copy-Item –Path dist/* –Destination //gisags2v/c$/inetpub/wwwroot/stfile -Recurse -Force",
-    "dev2": "powershell Remove-Item //gispolarisdev1v/c$/inetpub/wwwroot/stfile/*.* -Recurse -Force && powershell Copy-Item –Path dist/* –Destination //gispolarisdev1v/c$/inetpub/wwwroot/stfile -Recurse -Force",
-    "dev": "powershell Remove-Item c:/www/stf/*.* -Recurse -Force && powershell Copy-Item –Path dist/* –Destination c:/www/stf -Recurse -Force"
+    "publish": "npm run zip && npm run copy"
   },
   "dependencies": {
     "@mdi/font": "^5.9.55",

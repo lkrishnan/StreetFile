@@ -5,7 +5,7 @@ import VueRouter from "vue-router"
 
 Vue.use( VueRouter )
 
-const routes = [
+	const routes = [
 		{
 			path: "/",
 			name: "Search",
@@ -33,7 +33,7 @@ const routes = [
 		}, {
 			path: '/add',
 			name: 'Add',
-			component: ( ) => import( /* webpackChunkName: "edit" */ "./components/Edit.vue" ),
+			component: () => import( /* webpackChunkName: "edit" */ "./components/Edit.vue" ),
 			children: [
 				{
 					name: "Add_Legal",
@@ -56,7 +56,7 @@ const routes = [
 		}, {
 			path: '/edit',
 			name: 'Edit',
-			component: ( ) => import( /* webpackChunkName: "edit" */ "./components/Edit.vue" ),
+			component: () => import( /* webpackChunkName: "edit" */ "./components/Edit.vue" ),
 			children: [
 				{
 					name: "Edit_Legal",
@@ -75,25 +75,14 @@ const routes = [
 				}
 		
 			]
-			/*,
-			beforeEnter( to, from, next ){
-				console.log( "before enter" )
-				console.log( store.getters[ "auth" ] )
-				if( store.getters[ "auth" ] === '' ){ //user not logged show the login page
-					next( {	name: "Login" } );
-				
-				}else{
-					next( )
-				
-				}
-			
-			}*/
-			
+						
 		}
 
-	];	
+	],
 
-const router = new VueRouter( {  routes, mode: "history" } )
+	router = new VueRouter( {  
+			routes
+		} );
 
 router.beforeEach( ( to, from, next ) => {
 	

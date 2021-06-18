@@ -8,7 +8,7 @@
 							<v-card-title>Legal Street Name</v-card-title>
 						</v-col>
 						<v-col col="1" class="d-flex justify-end">
-							<v-btn class="ma-2" color="primary" @click="takeAction( 'Delete_Legal', 0 )" v-if="( auth !== '' && stinfo.alias.length == 0 )" ><v-icon left>mdi-trash-can</v-icon>Delete</v-btn>
+							<!--<v-btn class="ma-2" color="primary" @click="takeAction( 'Delete_Legal', 0 )" v-if="( auth !== '' && stinfo.alias.length == 0 )" ><v-icon left>mdi-trash-can</v-icon>Delete</v-btn>-->
 							<v-btn class="ma-2" color="primary" @click="takeAction( 'Edit_Legal', 0 )" v-if="( auth !== '' )" ><v-icon left>mdi-file-edit</v-icon>Edit</v-btn>
 						</v-col>
 					</v-row>
@@ -92,7 +92,7 @@
 						<v-card-title>{{ ( stinfo.alias.length > 0 ? "Alias Street Names" : "" ) }}</v-card-title>
 						</v-col>
 						<v-col col="1" class="d-flex justify-end">
-						<v-btn class="ma-2" color="primary" @click="takeAction( 'Add_Alias' )" v-if="( auth !== '' )" ><v-icon left>mdi-plus-circle</v-icon>Add New Alias</v-btn>
+						<v-btn class="ma-2" color="primary" @click="takeAction( 'Add_Alias', 0 )" v-if="( auth !== '' )" ><v-icon left>mdi-plus-circle</v-icon>Add New Alias</v-btn>
 						</v-col>
 					</v-row>
 					<v-expansion-panels inset>
@@ -103,7 +103,7 @@
 										{{ item.admkey }}
 									</v-col>
 									<v-col col="1" class="d-flex justify-end">
-										<v-btn class="ma-2" color="primary" @click="takeAction( 'Delete_Alias', index )" v-if="( auth !== '' )" ><v-icon left>mdi-trash-can</v-icon>Delete</v-btn>
+										<!--<v-btn class="ma-2" color="primary" @click="takeAction( 'Delete_Alias', index )" v-if="( auth !== '' )" ><v-icon left>mdi-trash-can</v-icon>Delete</v-btn>-->
 										<v-btn class="ma-2" color="primary" @click="takeAction( 'Edit_Alias', index )" v-if="( auth !== '' )" ><v-icon left>mdi-file-edit</v-icon>Edit</v-btn>
 									</v-col>
 								</v-row>
@@ -324,6 +324,7 @@
 					case "Add_Alias":
 						_this.$store.commit( "new_stinfo", [ { 
 							countystcode: _this.stcode,
+							citystcode: _this.stinfo.legal[ idx ].citystcode,
 							aliaslegalflag: "A",
 							staccess: "PUB", 
 							addrnumbers: "B",
@@ -348,7 +349,7 @@
 					case "Edit_Legal": 
 						var { created_user, created_date, last_edited_user, last_edited_date, last_edited_agency, ...temp } = _this.stinfo.legal[ idx ];
 						this.$store.commit( "new_stinfo", [ { ...temp } ] );
-						this.$router.push( { name: route_name, params: { oid: _this.stinfo.alias[ idx ].objectid  } } )
+						this.$router.push( { name: route_name, params: { oid: _this.stinfo.legal[ idx ].objectid  } } )
 						break;
 
 					case "Edit_Alias":

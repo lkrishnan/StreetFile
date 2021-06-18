@@ -21,6 +21,12 @@
 											hide-details
 											single-line
 											dense>
+											<template slot="selection" slot-scope="data">
+												{{ data.item.text }}
+											</template>
+											<template slot="item" slot-scope="data">
+												{{ data.item.text }}
+											</template>
 										</v-select>
 									</template>
 									<template v-slot:item.streetname="{item}">
@@ -40,6 +46,12 @@
 											menu-props="auto"
 											label="Select"
 											single-line>
+											<template slot="selection" slot-scope="data">
+												{{ data.item.text }}
+											</template>
+											<template slot="item" slot-scope="data">
+												{{ data.item.text }}
+											</template>
 										</v-select>
 									</template>
 									<template v-slot:item.addrnumsuf="{item}">
@@ -49,6 +61,12 @@
 											menu-props="auto"
 											label="Select"
 											single-line>
+											<template slot="selection" slot-scope="data">
+												{{ data.item.text }}
+											</template>
+											<template slot="item" slot-scope="data">
+												{{ data.item.text }}
+											</template>
 										</v-select>
 									</template> 
 									<template v-slot:item.municipality="{item}">
@@ -59,18 +77,9 @@
 											label="Select"
 											single-line
 											:rules="municipality_rules"
+											@change="chgCitycode( )"
 											required>
 										</v-select> 
-									</template>  
-									<template v-slot:item.citystcode="{item}">
-										<v-text-field 
-											v-model="item.citystcode"
-											single-line
-											dense
-											class="pt-4"
-											:rules="citystcode_rules"
-											required>
-										</v-text-field>
 									</template>    
                 				</v-data-table>
               				</v-col>
@@ -230,8 +239,16 @@
 						class="ma-2" 
 						color="primary" 
 						x-large
+						@click="save( 'push_alias' )"
+						v-if="route_name === 'Edit_Legal'">
+						<v-icon left>mdi-content-save-move</v-icon>Push to Alias & Save
+					</v-btn>
+					<v-btn 
+						class="ma-2" 
+						color="primary" 
+						x-large
 						@click="cancel( )">
-						<v-icon left>mdi-content-save</v-icon>Cancel
+						<v-icon left>mdi-arrow-left-circle</v-icon>Cancel
 					</v-btn>
         		</v-col>
       		</v-row>
@@ -272,6 +289,9 @@
 					case "Add_Legal": case "Add_Alias":
 						if( !vm.new_stinfo ){
 							vm.new_stinfo = [ {
+									preaddrnum: null, 
+									streettype: null,
+									addrnumsuf: null, 
 									aliaslegalflag: ( to.name === "Add_Legal" ? "L" : "A" ), 
 									staccess: "PUB", 
 									addrnumbers: "B",
@@ -350,9 +370,62 @@
 				{ value: null, text: "NA" }
 			
 			],
-			prefixes: [ "N", "S", "W", "E","" ],
-			sttypes: [ "AL", "AV", "BV", "BY", "CR", "CS", "CT", "CV", "DR", "EP", "EX", "FR", "HY", "LN", "LP", "PL", "PY", "RA", "RD", "RN", "RW", "ST", "TC", "TL", "TR", "WY", "" ],
-			suffixes: [ "N", "NW", "SE", "W", "E", "NE", "S", "SW", "EXT", "NB", "SB", "EB", "WB", "CONN", "" ],
+			prefixes: [
+				{ value: "N", text: "N" },
+				{ value: "S", text: "S" },
+				{ value: "W", text: "W" },
+				{ value: "E", text: "E" },
+				{ value: null, text: "" }
+
+			],
+			sttypes: [ 
+				{ value: "AL", text: "AL" }, 
+				{ value: "AV", text: "AV" },
+				{ value: "BV", text: "BV" },
+				{ value: "BY", text: "BY" },
+				{ value: "CR", text: "CR" },
+				{ value: "CS", text: "CS" },
+				{ value: "CT", text: "CT" },
+				{ value: "CV", text: "CV" },
+				{ value: "DR", text: "DR" },
+				{ value: "EP", text: "EP" },
+				{ value: "EX", text: "EX" },
+				{ value: "FR", text: "FR" },
+				{ value: "HY", text: "HY" },
+				{ value: "LN", text: "LN" },
+				{ value: "LP", text: "LP" },
+				{ value: "PL", text: "PL" },
+				{ value: "PY", text: "PY" },
+				{ value: "RA", text: "RA" },
+				{ value: "RD", text: "RD" },
+				{ value: "RN", text: "RN" },
+				{ value: "RW", text: "RW" },
+				{ value: "ST", text: "ST" },
+				{ value: "TC", text: "TC" },
+				{ value: "TL", text: "TL" },
+				{ value: "TR", text: "TR" },
+				{ value: "WY", text: "WY" },
+				{ value: null, text: "" }
+			
+			],
+			suffixes: [ 
+				{ value: "N", text: "N" },
+				{ value: "NW", text: "NW" },
+				{ value: "SE", text: "SE" },
+				{ value: "W", text: "W" },
+				{ value: "E", text: "E" },
+				{ value: "NE", text: "NE" },
+				{ value: "S", text: "S" },
+				{ value: "SW", text: "SW" },
+				{ value: "EXT", text: "EXT" },
+				{ value: "NB", text: "NB" },
+				{ value: "SB", text: "SB" },
+				{ value: "EB", text: "EB" },
+				{ value: "WB", text: "WB" },
+				{ value: "CONN", text: "CONN" },
+				{ value: null, text: "" } 
+			
+			],
 			juris: [ "MECK", "CHAR", "CORN", "DAVI", "HUNT", "MATT", "MINT", "PINE", "STAL", "OTHER" ],
 			parcelsattach: [ "Y", "N" ],
 			stcont: [ "Y", "N" ],
@@ -407,13 +480,13 @@
     	},
 
     	methods: {
-      		save( ){
+      		save( type = null ){
         		const _this = this;
 
 				if( _this.$refs.form.validate( ) ){
 					switch( _this.route_name ){
 						case "Edit_Legal": case "Edit_Alias":
-							_this.edit( )
+							_this.edit( type )
 						break
 
 						case "Add_Legal": case "Add_Alias":
@@ -426,7 +499,7 @@
 
       		},
 
-			edit( ){
+			edit( type ){
         		const _this = this,
 					change_row = ObjDiffs( 
 						( _this.route_name == "Edit_Alias" ? _this.stinfo.alias.find( x => x.objectid === _this.new_stinfo[ 0 ].objectid ) : _this.stinfo.legal[ 0 ] ), //old value
@@ -436,6 +509,8 @@
           			_this.nochanges = false;
 
 					let update_row = { },
+						insert_row ={ },
+						dispatch_data = { },
 						add_admkey = Object.keys( change_row ).some( key => { 
 							return [ "preaddrnum", "streetname", "streettype", "addrnumsuf", "municipality", "staccess", "roadtype" ].includes( key ) 
 						} );
@@ -444,19 +519,36 @@
 
 					if( add_admkey ){
 						update_row.admkey = FormatADMKey( _this.new_stinfo[ 0 ].preaddrnum, _this.new_stinfo[ 0 ].streetname, _this.new_stinfo[ 0 ].streettype,
-							_this.new_stinfo[ 0 ].addrnumsuf, _this.new_stinfo[ 0 ].municipality, _this.new_stinfo[ 0 ].staccess, _this.new_stinfo[ 0 ].roadtype );  
+							_this.new_stinfo[ 0 ].addrnumsuf, _this.new_stinfo[ 0 ].municipality, _this.new_stinfo[ 0 ].staccess, _this.new_stinfo[ 0 ].roadtype )
 					
 					}
 
+					if( type === "push_alias" ){ //make the old legal street an alias
+						const { objectid, ...temp } = _this.new_stinfo[ 0 ]
+
+						insert_row = {  ...temp }
+
+						insert_row.aliaslegalflag = "A"
+
+					}
+
+					if( Object.keys( insert_row ).length > 0 ){
+						dispatch_data.insert = { 
+								data: JSON.stringify( ObjToUppercase( insert_row ) )
+							}  
+					
+					} 
+					
 					if( Object.keys( update_row ).length > 0 ){
-						//update the specific row
-						this.$store.dispatch( "update", { 
-							filter: _this.new_stinfo[ 0 ].objectid, 
-							data: JSON.stringify( ObjToUppercase( update_row ) ) 
-						} );
-					
+						dispatch_data.update = {
+								filter: _this.new_stinfo[ 0 ].objectid, 
+								data: JSON.stringify( ObjToUppercase( update_row ) ) 
+							}
 					}
-
+					
+					//update the specific row
+					this.$store.dispatch( "update", dispatch_data );
+					
         		}else{
           			_this.nochanges = true;
 
@@ -475,7 +567,9 @@
 
 					if( Object.keys( insert_row ).length > 0 ){
 						//insert the new legal row
-						_this.$store.dispatch( "insert", { data: JSON.stringify( ObjToUppercase( insert_row ) ) } );
+						_this.$store.dispatch( "insert", { 
+							data: JSON.stringify( ObjToUppercase( insert_row ) ) 
+						} );
 					
 					}
 
@@ -490,27 +584,67 @@
 			
 			},
 
+			chgCitycode( ){
+				const _this = this
+
+				switch( _this.route_name ){
+					case "Edit_Legal":
+						const lookup = {
+								"MECK" : "0",
+								"CHAR" : "1",
+								"DAVI" : "2",
+								"CORN" : "3",
+								"PINE" : "4",
+								"MATT" : "5",
+								"HUNT" : "6",
+								"MINT" : "7",
+								"STAL" : "8"
+				
+							},
+							citystcode = _this.stinfo.legal[ 0 ].citystcode,
+							muni = _this.new_stinfo[ 0 ].municipality; 	
+						
+						if( citystcode ){ //if the citystcode was null it will be generated by the backend
+							_this.new_stinfo[ 0 ].citystcode = ( muni === "OTHER" ? null : ( lookup[ muni ] + citystcode.substring( 1 ) ) ) 
+						
+						}
+
+						break
+
+				}
+						
+			},
+
 			chngHeader( route ){
-        		const _this = this,
-          			idx = _this.headers.findIndex( ( { value } ) => value === 'countystcode' );
+        		const _this = this
 				
 					switch( route ){
 						case "Add_Legal":
-							if( idx > -1 ){
-								_this.headers.splice( idx, 1 );
-							}
+							[ "countystcode", "citystcode" ].forEach( key => { 
+								const idx = _this.headers.findIndex( ( { value } ) => value === key )
+								if( idx > -1 ){
+									_this.headers.splice( idx, 1 );
+								}
+
+							} )
 							
 							break
 						default:
-							if( idx == -1 ){
-								_this.headers.splice( 5, 0, { text: "County Code", value: "countystcode", sortable: false } );
-							}
+							if( _this.headers.findIndex( ( { value } ) => value === "countystcode" ) == -1 ){
+								_this.headers.splice( _this.headers.length, 0, { text: "County Code", value: countystcode, sortable: false } );
 							
+							}
+
+							if( _this.headers.findIndex( ( { value } ) => value === "citystcode" ) == -1 ){
+								_this.headers.splice( _this.headers.length, 0, { text: "City Code", value: countystcode, sortable: false } );
+							
+							}
+
 							break
 					
 				}
-    		}
-
+    		
+			}
       		
 		}
 

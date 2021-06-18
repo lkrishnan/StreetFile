@@ -2,7 +2,7 @@
   	<v-container class="my-5">
     	<v-row justify="center">
       		<v-col sm="6">
-        		<v-card outlined v-model="validating" :disabled="(validating === 1)"> 
+        		<v-card outlined v-model="progress.login" :disabled="(progress.login === 1)"> 
           			<v-form>
             			<v-container class="pa-4">
               				<v-text-field 
@@ -25,11 +25,11 @@
 							<v-row class="my-1">
 								<v-btn @click="login" outlined color="primary"  class="ml-4">Login</v-btn>
 								<v-btn @click="back" outlined color="primary" class="ml-4">Back</v-btn>
-								<p v-if="auth.indexOf( 'error' ) > -1" class="ml-4 red--text">The entered login or password is wrong.</p>
+								<p v-if="error_msgs.login" class="ml-4 red--text">{{ error_msgs.login }}</p>
 							</v-row>
             			</v-container>
             			<v-fade-transition>
-              				<v-overlay :value="(validating === 1)">
+              				<v-overlay :value="(progress.login === 1)">
                 				<v-progress-circular :size="50" color="amber" indeterminate></v-progress-circular>
               				</v-overlay>
             			</v-fade-transition>
@@ -57,15 +57,18 @@
 		data( ){
       		return {
         		userName: "",
-        		password: "",
-        		validating: 0
+        		password: ""
       		}
     	},  
     
 		computed: {
       		auth( ){
-        		return this.$store.state.token;
+        		return this.$store.state.token
       		
+			},
+			error_msgs( ){
+				return this.$store.state.error_msgs
+
 			},
 			passwordErrors( ){
         		const errors = [ ]
@@ -79,8 +82,13 @@
         		return errors
       		
 			},
+			progress( ){
+				return this.$store.state.progress
+
+			},
 			stcode( ){
-				return this.$route.params.stcode; 
+				return this.$route.params.stcode
+
 			},
       		userNameErrors( ){
         		const errors = [ ]
@@ -104,8 +112,16 @@
     
 		methods: {
       		async login( ){
-        		this.validating = 1;
-        		this.$store.dispatch( "login", { userName: this.userName, password: this.password } );
+        		const _this = this
+				
+				//show progress animation
+				_this.progress.login = 1
+
+				//make an authentication request to the server
+        		_this.$store.dispatch( "login", { 
+					userName: _this.userName, 
+					password: _this.password 
+				} )
       		
 			},
       		back( ){
@@ -122,23 +138,12 @@
 			},
 		    authenticate( ){
 				const _this = this
-
-				if( _this.auth !== '' || _this.auth.indexOf( "error" ) < 0 ){
+			
+				if( _this.auth !== '' ){
 					_this.$router.go( -1 )
 
 				}
-
-				//if( _this.auth === '' || _this.auth.indexOf( "error" ) > -1 ){
-				//	_this.$store.commit( "mode", "login" )
-				
-				//}else{
-					//kick back to the search/detail screen
-					//_this.$router.go( -1 )
-				
-				//}
-
-				_this.validating = 0;
-			
+							
 			}
 
     	}
