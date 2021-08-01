@@ -97,9 +97,9 @@ export default new Vuex.Store( {
 	},
   	actions: {
 		async login( { commit }, login_data ){
-			let reply = ( await axios.post( "https://maps.mecklenburgcountync.gov/auth/v1/login", login_data ) ).data;
+			//let reply = ( await axios.post( "https://maps.mecklenburgcountync.gov/auth/v1/login", login_data ) ).data;
 			//let reply = ( await axios.post( "http://localhost:3000/v1/login", login_data ) ).data;
-			//let reply = ( await axios.post( "https://meckgisdev.mecklenburgcountync.gov/auth/v1/login", login_data ) ).data;
+			let reply = ( await axios.post( "https://meckgisdev.mecklenburgcountync.gov/auth/v1/login", login_data ) ).data;
 
 			if( reply.result === "success" ){
 				if( reply.hasOwnProperty( "token") ){
@@ -153,15 +153,15 @@ export default new Vuex.Store( {
 				update_reply;
 
 			if( data.hasOwnProperty( "insert" ) ){
-				insert_reply = ( await update_push_instance.post( "https://maps.mecklenburgcountync.gov/auth/v1/insert", data.insert ) ).data
+				//insert_reply = ( await update_push_instance.post( "https://maps.mecklenburgcountync.gov/auth/v1/insert", data.insert ) ).data
 				//insert_reply = ( await update_push_instance.post( "http://localhost:3000/v1/insert", data.insert ) ).data
-				//insert_reply = ( await update_push_instance.post( "https://meckgisdev.mecklenburgcountync.gov/auth/v1/insert", data.insert ) ).data
+				insert_reply = ( await update_push_instance.post( "https://meckgisdev.mecklenburgcountync.gov/auth/v1/insert", data.insert ) ).data
 
 			}
 
-			update_reply = ( await update_push_instance.post( "https://maps.mecklenburgcountync.gov/auth/v1/update", data.update ) ).data
+			//update_reply = ( await update_push_instance.post( "https://maps.mecklenburgcountync.gov/auth/v1/update", data.update ) ).data
 			//update_reply = ( await update_push_instance.post( "http://localhost:3000/v1/update", data.update ) ).data
-			//update_reply = ( await update_push_instance.post( "https://meckgisdev.mecklenburgcountync.gov/auth/v1/update", data.update ) ).data
+			update_reply = ( await update_push_instance.post( "https://meckgisdev.mecklenburgcountync.gov/auth/v1/update", data.update ) ).data
 
 			if( data.hasOwnProperty( "insert" ) ){
 				if( insert_reply.result === "success" && update_reply.result === "success" ){
@@ -183,9 +183,9 @@ export default new Vuex.Store( {
 			let insert_instance = axios.create( {
 					headers: ( this.state.token.length > 0 ? { "Authorization": this.state.token } : { } )
 				} ),
-				reply = ( await insert_instance.post( "https://maps.mecklenburgcountync.gov/auth/v1/insert", insert_data ) ).data;
+				//reply = ( await insert_instance.post( "https://maps.mecklenburgcountync.gov/auth/v1/insert", insert_data ) ).data;
 				//reply = ( await insert_instance.post( "http://localhost:3000/v1/insert", insert_data ) ).data;
-				//reply = ( await insert_instance.post( "https://meckgisdev.mecklenburgcountync.gov/auth/v1/insert", insert_data ) ).data;
+				reply = ( await insert_instance.post( "https://meckgisdev.mecklenburgcountync.gov/auth/v1/insert", insert_data ) ).data;
 		
 			if( reply.result === "success" ){
 				router.replace( { name: "Detail", params: { stcode: reply.stcode } } )
@@ -201,9 +201,9 @@ export default new Vuex.Store( {
 			let delete_instance = axios.create( {
 					headers: ( this.state.token.length > 0 ? { "Authorization": this.state.token } : { } )
 				} ),
-				reply = ( await delete_instance.post( "https://maps.mecklenburgcountync.gov/auth/v1/delete", delete_data ) ).data;
+				//reply = ( await delete_instance.post( "https://maps.mecklenburgcountync.gov/auth/v1/delete", delete_data ) ).data;
 				//reply = ( await delete_instance.post( "http://localhost:3000/v1/delete", delete_data ) ).data;
-				//reply = ( await delete_instance.post( "https://meckgisdev.mecklenburgcountync.gov/auth/v1/delete", delete_data ) ).data;
+				reply = ( await delete_instance.post( "https://meckgisdev.mecklenburgcountync.gov/auth/v1/delete", delete_data ) ).data;
 		
 			if( reply.result === "success" ){
 				if( this.state.stinfo.legal[ 0 ].objectid === delete_data.filter ){
