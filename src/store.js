@@ -15,7 +15,8 @@ export default new Vuex.Store( {
 		blocks: [ ],
 		block_selection: null,
 		error_msgs: {
-			login: null
+			login: null,
+			edit: null
 		
 		},
 		new_stinfo: null,

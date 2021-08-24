@@ -225,8 +225,8 @@
 						dense
 						outlined
 						type="error"
-						v-if="nochanges">
-						No edits were detected. Make some changes before saving or hit <strong>Cancel</strong> to exit edit mode.
+						v-if="error_msgs.edit">
+						{{ error_msgs.edit }}
 					</v-alert>
 					<v-btn 
 						class="ma-2" 
@@ -442,12 +442,22 @@
 				v => !!v || 'City Code is required'
 			
 			],
-			nochanges: false,
 			stcode: null
 
     	} ),
 
     	computed: {
+			error_msgs: {
+      			set( error_msgs ){
+					this.$store.commit( "error_msgs", error_msgs )
+									
+				},
+      			get( ){
+					return this.$store.state.error_msgs
+      			
+				}
+							
+			},
 			new_stinfo: {
       			set( new_stinfo ){
 					this.$store.commit( "new_stinfo", new_stinfo )
@@ -483,6 +493,8 @@
       		save( type = null ){
         		const _this = this;
 
+				_this.error_msgs.edit = null
+
 				if( _this.$refs.form.validate( ) ){
 					switch( _this.route_name ){
 						case "Edit_Legal": case "Edit_Alias":
@@ -506,7 +518,7 @@
 						_this.new_stinfo[ 0 ] ); //new value
 
         		if( Object.keys( change_row ).length > 0 ){
-          			_this.nochanges = false;
+          			_this.error_msgs.edit = null
 
 					let update_row = { },
 						insert_row ={ },
@@ -550,7 +562,7 @@
 					this.$store.dispatch( "update", dispatch_data );
 					
         		}else{
-          			_this.nochanges = true;
+          			_this.error_msgs.edit = "No edits were detected. Make some changes before saving or push Cancel to exit."
 
         		}
 
@@ -578,9 +590,10 @@
       		},
       		
 			cancel( ){
-				const _this = this;
-        		
-				_this.$router.go( -1 )
+				const _this = this
+
+				_this.error_msgs.edit = null
+        		_this.$router.go( -1 )
 			
 			},
 
