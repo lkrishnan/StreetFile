@@ -10,7 +10,7 @@
 workbox.core.setCacheNameDetails( { prefix: "stfile" } );
 
 //Change this value every time before you build
-const LATEST_VERSION = "v1.6.1"
+const LATEST_VERSION = "v1.7"
 
 self.addEventListener( "install", event => {
 	console.log( "Service worker is Installing." );

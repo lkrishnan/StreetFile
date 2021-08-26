@@ -121,7 +121,6 @@ export default new Vuex.Store( {
 				}
 							
 			}else if( reply.result === "failure" ){
-				console.log( reply.error)
 				commit( "error_msgs", { login: reply.error })
 				commit( "auth", "" )
 
@@ -193,6 +192,7 @@ export default new Vuex.Store( {
 			
 			}else if( reply.result === "failure" ){
 				console.log( reply.error)
+				commit( "error_msgs", { edit: reply.error } )
 
 			}
 
